@@ -1,0 +1,6 @@
+- for null values, get previous one (domain_name, ttl, class, …)
+- check that soa name server is defined below
+- noms de domaine unicode à transcoder en ASCII
+- trouver un truc intelligent pour gérer les enregistrements multilignes
+	<anySpace> peut être un \n si on a déjà rencontré une ( ;
+- matcher les classes de façon insensitives ;
