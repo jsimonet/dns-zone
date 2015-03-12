@@ -1,15 +1,25 @@
 use v6;
 
-use Grammar::Debugger;
+# use Grammar::Debugger;
 
 grammar DNSZone
 {
 	my $parenCount=0;
 
-	rule TOP { [<line> ]+ { $parenCount=0; } }
+	method isParenCountOK( Str :$str )
+	{
+		my $parenO = +$str.comb: /\(/;
+		my $parenF = +$str.comb: /\)/;
+		$parenO == $parenF;
+	}
+
+	# rule TOP { [<line> ]+ { $parenCount=0; } }
+	rule TOP { [<line> ]+ }
 
 	token line {
-		^^ <rr> \h* <commentWithoutNewline>? { say "parenCount = $parenCount"; } <?{ ! $parenCount }> |
+		# ^^ <rr> \h* <commentWithoutNewline>? <?{ ! $parenCount }> |
+		# ^^ <rr> \h* <commentWithoutNewline>? <?{ self.isParenCountOK( str => $/.Str ) ; }> |
+		^^ <rr> \h* <commentWithoutNewline>? |
 		<comment> #|
 		# <emptyLine>
 	}
@@ -161,7 +171,8 @@ grammar DNSZone
 	# for \n space, at least one ( have to be matched
 	token rrSpace {
 		\h                         |
-		\n <?{ $parenCount > 0; }> |
+		# \n <?{ $parenCount > 0; }> |
+		\n |
 		<paren>
 	}
 
@@ -170,50 +181,8 @@ grammar DNSZone
 	}
 
 	proto token paren { * }
-	token paren:sym<po> { '(' { $parenCount++; say "parenCount=$parenCount"; } }
-	token paren:sym<pf> { ')' { $parenCount--; say "parenCount=$parenCount"; } }
+	token paren:sym<po> { '(' }
+	token paren:sym<pf> { ')' }
 
 }
 
-
-# say "OK" if zone.parse( "bla 42 IN A" );
-# say "OK" if zone.parse( "bla 42 IN\n A" );
-# say "OK" if zone.parse( "bla IN 42 A" );
-# say "OK" if zone.parse( "bla 42 A" );
-# say "OK" if zone.parse( "bla A" );
-# say "OK" if zone.parse( "bla IN A   \n" );
-# say "OK" if zone.parse( q:to/EOEXP/ );
-# bla 42 IN A
-# EOEXP
-
-# say "OK" if zone.parse( ";bla 42", rule => "comment" );
-
-# grammar CSV {
-# 	token TOP { [ <line> \n? ]+ }
-# 	token line {
-# 		^^            # Beginning of a line
-# 		<value>* % \, # Any number of <value>s with commas in between them
-# 		$$            # End of a line
-# 	}
-# 	token value {
-# 		[
-# 			| <-[",\n]>     # Anything not a double quote, comma or newline
-# 			| <quoted-text> # Or some quoted text
-# 		]*              # Any number of times
-# 	}
-# 	token quoted-text {
-# 		\"
-# 		[
-# 			| <-["\\]> # Anything not a " or \
-# 				| '\"'     # Or \", an escaped quotation mark
-# 			]*         # Any number of times
-# 			\"
-# 	}
-# }
-
-
-# say "Valid CSV file!" if CSV.parse( q:to/EOCSV/ );
-# 	Year,Make,Model,Length
-# 	1997,Ford,E350,2.34
-# 	2000,Mercury,Cougar,2.38
-# 	EOCSV

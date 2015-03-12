@@ -1,15 +1,15 @@
-;	IN	NS	ns0.simonator.info.
-;IN	NS	ns0
-;IN	MX	10	mail
-;mail	IN	A	192.168.1.136
-;@	IN	A	192.168.1.127
-;tornado	IN	A	192.168.1.127
-;IN	AAAA	2a01:e35:2ef5:24d0::127
-;ns0	IN	A	192.168.1.133
-;ns0	IN	AAAA	2a01:e35:2ef5:24d0::133
-;web	IN	A	192.168.1.129
-;web	IN	AAAA	2a01:e35:2ef5:24d0::129
-;www	IN	CNAME	web
+	IN	NS	ns0.simonator.info.
+IN	NS	ns0
+IN	MX	10	mail
+mail	IN	A	192.168.1.136
+@	IN	A	192.168.1.127
+tornado	IN	A	192.168.1.127
+IN	AAAA	2a01:e35:2ef5:24d0::127
+ns0	IN	A	192.168.1.133
+ns0	IN	AAAA	2a01:e35:2ef5:24d0::133
+web	IN	A	192.168.1.129
+web	IN	AAAA	2a01:e35:2ef5:24d0::129
+www	IN	CNAME	web
 www(
 IN	CNAME	web)
 
