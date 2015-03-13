@@ -4,7 +4,7 @@ use v6;
 
 grammar DNSZone
 {
-	my $parenCount=0;
+	my $parenCount=0; # Used to count opened parentheses
 
 	method isParenCountOK( Str :$str )
 	{
@@ -13,48 +13,47 @@ grammar DNSZone
 		$parenO == $parenF;
 	}
 
-	# rule TOP { [<line> ]+ { $parenCount=0; } }
-	rule TOP { [<line> ]+ }
+	rule TOP { [<line> ]+ { $parenCount=0; } }
+	# rule TOP { [<line> ]+ }
 
 	token line {
-		# ^^ <rr> \h* <commentWithoutNewline>? <?{ ! $parenCount }> |
+		^^ <rr> \h* <commentWithoutNewline>? <?{ ! $parenCount }> |
+			# { say "ParenCount is = $parenCount";} |
 		# ^^ <rr> \h* <commentWithoutNewline>? <?{ self.isParenCountOK( str => $/.Str ) ; }> |
-		^^ <rr> \h* <commentWithoutNewline>? |
+		# ^^ <rr> \h* <commentWithoutNewline>? |
 		<comment> #|
-		# <emptyLine>
 	}
 
-	# token emptyLine {
-	# 	^^ [\h | \v | \n]+ $$ |
-	# 	^^ \h* $$ |
-	# 	^ $ |
-	# 	\h* \n
-	# }
+	# COMMENTS
+	token commentWithoutNewline { ';' \N* }     # ;comment
+	token comment               { ';' \N* \n? } # ;comment\n
 
-	token commentWithoutNewline { ';' \N* } # ;comment
-	token comment               { ';' \N* \n? }    # ;comment\n
-
+	# Resource record
 	token rr { [ <domain_name> <rrSpace>+ ]? <rrSpace>* <ttl_class> <type> <rrSpace>* }
 
 	# DOMAIN NAME
-	# token rr_domain_name {
-	# 	^^ <domain_name> \h+ |
-	# 	''
-	# }
-
 	# can be null, or any of :
 	# domain subdomain.domain domain.tld. @
 	proto token domain_name     { * }
 	token domain_name:sym<fqdn> { [ <[a..z0..9]>+ \.? ]+ }
 	token domain_name:sym<@>    { '@' }
-	# token domain_name:sym<null> { '' }
 
 	# TTL AND CLASS
-	token ttl_class{
-		<class> <rrSpace>+ <ttl>   <rrSpace>+ |
-		<ttl>   <rrSpace>+ <class> <rrSpace>+ |
-		<class>                    <rrSpace>+ |
-		<ttl>                      <rrSpace>+ |
+	# <ttl> & <class> are optionals
+	# TODO this token is problematic for parentheses count
+	# I stupidely increment & decrement $parenCount to know if a \n is legal but,
+	# two rules are parsed to check the existence of the second token
+	# --> <rrSpace> is called twice too, so $parenCount is incorrect.
+	# token ttl_class{
+	# 	<class> <rrSpace>+ <ttl>   <rrSpace>+ |
+	# 	<ttl>   <rrSpace>+ <class> <rrSpace>+ |
+	# 	<class>                    <rrSpace>+ |
+	# 	<ttl>                      <rrSpace>+ |
+	# 	''
+	# }
+
+	token ttl_class {
+		[ <class> | <ttl> ] ** 1..2 % [ <rrSpace>+ ] <rrSpace>+ <?{ $<class>.elems <= 1 && $<ttl>.elems <= 1; }> |
 		''
 	}
 
@@ -65,6 +64,7 @@ grammar DNSZone
 	}
 
 	# CLASS
+	# TODO : case insensitive
 	proto token class   { * }
 	token class:sym<IN> { <sym> } # The Internet
 	token class:sym<CH> { <sym> } # Chaosnet
@@ -72,7 +72,7 @@ grammar DNSZone
 
 	# TYPE
 	proto token type           { * }
-	token type:sym<A>          { <sym> <rrSpace>+ <rdataA> <rrSpace>* }
+	token type:sym<A>          { <sym> <rrSpace>+ <rdataA> }
 	token type:sym<AAAA>       { <sym> <rrSpace>+ <rdataAAAA> }
 	# token type:sym<AFSDB>      { <sym> }
 	# token type:sym<APL>        { <sym> }
@@ -114,6 +114,7 @@ grammar DNSZone
 
 
 	# RDATA
+	# depends on TYPE
 	token rdataA {<ipv4>}
 	token rdataAAAA {<ipv6>}
 
@@ -123,7 +124,8 @@ grammar DNSZone
 	}
 
 	# IPV6
-	# TODO add count of <hexdigit> & :: : for each ::, one :hexdigit less
+	# TODO Only one semi-colon, and the count of <h16> have to be < 8
+	# If only "single" semi-colon are present, the count of <h16> have to be == 8
 	token ipv6 {
 		<h16> ** 2..8 % [ ':' | '::' ]
 	}
@@ -157,7 +159,7 @@ grammar DNSZone
 		\d+ <?{ $/ < 256 }> # or $/ < 2 ** 8
 	}
 
-	# int 8 bits
+	# int 32 bits
 	token d32 {
 		\d+ <?{ $/ < 4294967296 }> # or $/ < 2 ** 32
 	}
@@ -167,22 +169,21 @@ grammar DNSZone
 		<:hexdigit> ** 1..4
 	}
 
-	# rrSpace can be a classic space, or a ( or )
+	# RRSPACE
+	# Can be a classic space, or a ( or )
 	# for \n space, at least one ( have to be matched
 	token rrSpace {
 		\h                         |
-		# \n <?{ $parenCount > 0; }> |
-		\n |
+		\n <?{ $parenCount > 0; }> |
+		# \n |
 		<paren>
 	}
 
-	token anySpace {
-		[\h|\v]*
-	}
-
+	# PAREN
+	# Parenthese definition
 	proto token paren { * }
-	token paren:sym<po> { '(' }
-	token paren:sym<pf> { ')' }
+	token paren:sym<po> { '(' { $parenCount++; } }
+	token paren:sym<pf> { ')' { $parenCount--; } }
 
 }
 
