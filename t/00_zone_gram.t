@@ -6,8 +6,6 @@ BEGIN { @*INC.push('lib') };
 # Test file for zone grammar parsing.
 
 use Grammars::DNSZone;
-use Grammars::DNSZoneAction;
-use ResourceRecordDataA;
 
 # General format of "resource record" :
 # DOMAIN_NAME CLASS TTL TYPE DATA ; COMMENTS
@@ -17,17 +15,45 @@ use ResourceRecordDataA;
 # These tests have to be ok
 my @toTestAreOk = (
 	'bla IN A 10.10.0.42',
+	"bla IN A 10.10.0.42\n",
 	'IN AAAA  2000:1000:1000:1000:2000:1000:1000:1000',
+	'testttl IN 42s A 10.0.0.42',
+	'testttl	 IN     42m A 10.0.0.42 ; different spaces',
+	'testttl MX 10 bla ; \'10 bla\' is part of MX RDATA',
+	'testcomment A 10.0.0.42 ; this is a comment',
+	'; only a comment',
+	"testmultiline(
+	IN(
+	42s)
+	AAAA
+) 1000:1000:1000:1000:2000:1000:1000:1000",
+	'@ IN SOA ns0.simonator.info. kernel.simonator.info. 2015020801 604800 86400 2419200 604800 ; oneline soa',
+	'@ IN SOA ns0.simonator.info. kernel.simonator.info. (
+	2015020801 ; serial
+	604800     ; refresh
+	86400      ; retry
+	2419200    ; expire
+	604800 )   ; negative cache ttl
+	; soa is generally writed in multiline, with comments
+	; only one soa by zone definition',
 );
 
-
-my $actions = DNSZoneAction.new;
+my @toTestAreNok = (
+	'bla IN
+	A 10.0.0.42 ; must have a parenthese to be multi-line',
+	'bla IN IN A 10.0.0.42';
+);
 
 say '----------------------------';
 say 'Following test must succeed.';
 for (@toTestAreOk) {
-	my @zones = DNSZone.parse($_, :actions($actions)) , $_;
-	say @zones;
+	ok DNSZone.parse($_) , $_;
+}
+
+say '--------------------------';
+say 'Following test must fails.';
+for (@toTestAreNok) {
+	nok DNSZone.parse($_) , $_;
 }
 
 # Tests for specific rules
