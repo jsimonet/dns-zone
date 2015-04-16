@@ -6,4 +6,6 @@
 	(05-03-2015) utilisation de <rrSpace> qui peut être un espace conventionel, ou une parenthèse (ouvrante ou fermante) ; 
 		dans le cas de la parenthèse un compteur est incrémenté. Le problème, c'est que le parser de la grammaire évalue 2 fois class, ce qui provoque un compte trop gros de ( ;
 		idem pour ) ;
+	- 1 parenthèse ) et une ( après ==> $parenthèsen == 0 ==> problème…
 - matcher les classes de façon « case insensitives » ;
+- ipv4 spéciales du style 0.0.0.0 ?

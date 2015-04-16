@@ -183,7 +183,7 @@ grammar DNSZone
 	# Parenthese definition
 	proto token paren { * }
 	token paren:sym<po> { '(' { $parenCount++; } }
-	token paren:sym<pf> { ')' { $parenCount--; } }
+	token paren:sym<pf> { ')' { $parenCount--; } <?{ $parenCount > 0; }>}
 
 }
 

@@ -25,10 +25,13 @@ my $actions = DNSZoneAction.new;
 
 say '----------------------------';
 say 'Following test must succeed.';
-for (@toTestAreOk) {
-	my @zones = DNSZone.parse($_, :actions($actions)) , $_;
-	say @zones;
-}
+my $zones;
+# for (@toTestAreOk) {
+# 	$zones = DNSZone.parse($_, :actions($actions)).ast.flat;
+# }
+
+$zones = DNSZone.parse(@toTestAreOk[0], :actions($actions));
+say "my zones = "~$zones.gist;
 
 # Tests for specific rules
 # ok DNSZone.parse(";bla 42;2", rule => "comment" ),";bla 42;2";
