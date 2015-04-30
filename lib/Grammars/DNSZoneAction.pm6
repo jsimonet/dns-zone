@@ -4,6 +4,7 @@ use ResourceRecord;
 use ResourceRecordDataA;
 use ResourceRecordDataAAAA;
 use ResourceRecordDataMX;
+use ResourceRecordDataCNAME;
 use Zone;
 use Type;
 
@@ -53,12 +54,8 @@ class DNSZoneAction
 
 	method type:sym<A>($/)
 	{
-		# my %type = (type => $<sym>, rdata => ResourceRecordDataA.new( ipAdress => $<rdataA> ) );
-		# make (type => %type);
-		# make type => $<sym>, rdata => $<rdataA>;
 		make Type.new( type  => ""~$<sym>,
 		               rdata => ResourceRecordDataA.new(ipAdress => $<rdataA>.Str) );
-		# make Match.new( type => $<sym>, rdata => ResourceRecordDataA.new( ipAdress => $<rdataA> ) );
 	}
 
 	method type:sym<AAAA>($/)
@@ -75,6 +72,12 @@ class DNSZoneAction
 						   domain => $<domain_name>.Str) );
 	}
 
+	method type:sym<CNAME>($/)
+	{
+		make Type.new( type  => $<sym>.Str,
+		               rdata => ResourceRecordDataCNAME.new(
+						   domain => $<domain_name>.Str) );
+	}
 	method rrSpace($/)
 	{
 		# say 'is a paren' if /\(|\)/;
