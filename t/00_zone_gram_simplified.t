@@ -35,7 +35,8 @@ my $zones;
 
 my $test = 'bla IN A 10.0.0.42
 bouh IN MX 10 bla
-c IN CNAME bla';
+c IN CNAME bla
+@ IN NS ns0';
 $zones = DNSZone.parse($test, :actions($actions));
 say "my zones = "~$zones.ast.gist;
 # Tests for specific rules

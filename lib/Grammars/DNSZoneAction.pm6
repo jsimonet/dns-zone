@@ -5,6 +5,7 @@ use ResourceRecordDataA;
 use ResourceRecordDataAAAA;
 use ResourceRecordDataMX;
 use ResourceRecordDataCNAME;
+use ResourceRecordDataNS;
 use Zone;
 use Type;
 
@@ -78,6 +79,14 @@ class DNSZoneAction
 		               rdata => ResourceRecordDataCNAME.new(
 						   domain => $<domain_name>.Str) );
 	}
+
+	method type:sym<NS>($/)
+	{
+		make Type.new( type  => $<sym>.Str,
+		               rdata => ResourceRecordDataNS.new(
+						   domain => $<domain_name>.Str) );
+	}
+
 	method rrSpace($/)
 	{
 		# say 'is a paren' if /\(|\)/;
