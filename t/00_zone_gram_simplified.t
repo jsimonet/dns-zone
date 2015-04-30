@@ -30,9 +30,13 @@ my $zones;
 # 	$zones = DNSZone.parse($_, :actions($actions)).ast.flat;
 # }
 
-$zones = DNSZone.parse(@toTestAreOk[0], :actions($actions));
-say "my zones = "~$zones.gist;
+# $zones = DNSZone.parse(@toTestAreOk[0], :actions($actions));
+# say "my zones = "~$zones.ast.gist;
 
+my $test = 'bla IN A 10.0.0.42
+bouh IN MX 10 bla';
+$zones = DNSZone.parse($test, :actions($actions));
+say "my zones = "~$zones.ast.gist;
 # Tests for specific rules
 # ok DNSZone.parse(";bla 42;2", rule => "comment" ),";bla 42;2";
 # ok DNSZone.parse( "domainname ", rule=>'rr_domain_name' );

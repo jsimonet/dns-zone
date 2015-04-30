@@ -9,9 +9,17 @@ class Zone
 
 	method gist()
 	{
-		print "(Zone=";
-		.print for @.rr;
-		print ")";
+		my $res = "(Zone=";
+		for @.rr
+		{ $res ~= .gist; }
+		$res ~= ")";
+
+		return $res;
+	}
+
+	method Str()
+	{
+		return .Str for @.rr;
 	}
 
 }

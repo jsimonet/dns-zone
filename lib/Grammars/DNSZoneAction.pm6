@@ -3,6 +3,7 @@ use v6;
 use ResourceRecord;
 use ResourceRecordDataA;
 use ResourceRecordDataAAAA;
+use ResourceRecordDataMX;
 use Zone;
 use Type;
 
@@ -22,7 +23,7 @@ class DNSZoneAction
 	method line($/)
 	{
 		$parenCount=0;
-		say "rr = "~$<rr>.ast.gist;
+		# say "rr = "~$<rr>.ast.gist;
 		make $<rr>.ast;
 	}
 
@@ -68,8 +69,10 @@ class DNSZoneAction
 
 	method type:sym<MX>($/)
 	{
-		# make Type.new( type  => $<sym>.Str,
-		#                rdata => ResourceRecordDataMX.new(todo => $<rdataMX>.Str) );
+		make Type.new( type  => $<sym>.Str,
+		               rdata => ResourceRecordDataMX.new(
+						   mxPref => $<mxpref>,
+						   domain => $<domain_name>.Str) );
 	}
 
 	method rrSpace($/)
@@ -82,10 +85,4 @@ class DNSZoneAction
 			$parenCount-- when ')';
 		}
 	}
-
-	# method paren($/)
-	# {
-	# 	# say 'Paren rule' ~ $<paren>.elems;
-	# }
-
 }

@@ -1,6 +1,6 @@
 use v6;
 
-# use Grammar::Debugger;
+use Grammar::Debugger;
 
 grammar DNSZone
 {
@@ -13,8 +13,8 @@ grammar DNSZone
 		$parenO == $parenF;
 	}
 
-	rule TOP { [<line> ]+ { $parenCount=0; } }
-	# rule TOP { [<line> ]+ }
+	# rule TOP { [ <line> ]+ { $parenCount=0; } }
+	rule TOP { [<line> ]+ }
 
 	token line {
 		^^ <rr> \h* <commentWithoutNewline>? <?{ ! $parenCount }> |

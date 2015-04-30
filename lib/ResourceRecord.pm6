@@ -13,12 +13,12 @@ class ResourceRecord
 
 	method gist()
 	{
-		return "(ResourceRecord Domain name="~$!domainName~", class="~$!class~", ttl="~$!ttl~", type="~$!type~", rr="~$!rdata~")";
+		return "(ResourceRecord Domain name="~$!domainName~", class="~$!class~", ttl="~$!ttl~", type="~$!type~", rdata="~$!rdata.gist~")";
 	}
 
 	method Str()
 	{
-		return "Domain name="~$!domainName~", class="~$!class~", ttl="~$!ttl~", type="~$!type~", rr="~$!rdata;
+		return "Domain name="~$!domainName~", class="~$!class~", ttl="~$!ttl~", type="~$!type~", rdata="~$!rdata;
 	}
 
 }

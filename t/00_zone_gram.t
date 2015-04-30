@@ -46,8 +46,10 @@ my @toTestAreNok = (
 
 say '----------------------------';
 say 'Following test must succeed.';
+my $dnsparser = DNSZone.new;
 for (@toTestAreOk) {
-	ok DNSZone.parse($_) , $_;
+	# ok DNSZone.parse($_) , $_;
+	ok $dnsparser.parse($_),$_;
 }
 
 say '--------------------------';
