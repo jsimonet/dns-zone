@@ -6,6 +6,7 @@ use ResourceRecordDataAAAA;
 use ResourceRecordDataMX;
 use ResourceRecordDataCNAME;
 use ResourceRecordDataNS;
+use ResourceRecordDataSOA;
 use Zone;
 use Type;
 
@@ -15,42 +16,31 @@ class DNSZoneAction
 	my $parenCount=0;
 	method TOP($/)
 	{
-		# for @<line>
-		# {
-		# 	say "my line = "~$_.ast;
-		# }
+		# say "bla="~@<line>».ast;
 		make Zone.new( rr => @<line>».ast );
 	}
 
 	method line($/)
 	{
 		$parenCount=0;
-		# say "rr = "~$<rr>.ast.gist;
-		make $<rr>.ast;
+		# say "resourceRecord = "~$<resourceRecord>.ast.gist;
+		make $<resourceRecord>.ast;
 	}
 
 
-	method rr($/)
+	method resourceRecord($/)
 	{
 		# say "domain name = $<domain_name> ; ttl = "~$<ttl_class><ttl>.Numeric~" ; class = "~$<ttl_class><class>.Str~" ; type = "~$<type><type>.Str~" ; rdata = "~$<type><rdata>~" brut type="~$<type>;
-		# my $rdata = '';
-		# given $<type><sym>
-		# {
-		# 	when 'A'    { $rdata = ResourceRecordDataA.new(ipAdress => $<type>.rdata); }
-		# 	when 'AAAA' { $rdata = ResourceRecordDataAAAA.new(ip6Adress => $<type>.rdata>); }
-		# 	default { say 'Unknown type'; }
-		# }
-
 		make ResourceRecord.new( domainName => $<domain_name>.Str,
 		                         ttl        => $<ttl_class><ttl>.Numeric,
 		                         class      => $<ttl_class><class>.Str,
 		                         type       => $<type>.ast.type.Str,
-		                         rdata      => $<type>.ast.rdata);
+		                         rdata      => $<type>.ast.rdata );
 	}
 
 	method ttl($/)
 	{
-		make +$/; # convert to int
+		make +$/; # The + convert to int
 	}
 
 	method type:sym<A>($/)
@@ -69,22 +59,36 @@ class DNSZoneAction
 	{
 		make Type.new( type  => $<sym>.Str,
 		               rdata => ResourceRecordDataMX.new(
-						   mxPref => $<mxpref>,
-						   domain => $<domain_name>.Str) );
+		                        mxPref     => $<mxpref>,
+		                        domainName => $<domain_name>.Str) );
 	}
 
 	method type:sym<CNAME>($/)
 	{
 		make Type.new( type  => $<sym>.Str,
 		               rdata => ResourceRecordDataCNAME.new(
-						   domain => $<domain_name>.Str) );
+		                        domainName => $<domain_name>.Str) );
 	}
 
 	method type:sym<NS>($/)
 	{
 		make Type.new( type  => $<sym>.Str,
 		               rdata => ResourceRecordDataNS.new(
-						   domain => $<domain_name>.Str) );
+		                        domainName => $<domain_name>.Str) );
+	}
+
+	method type:sym<SOA>($/)
+	{
+		# say "in soa maker";
+		make Type.new( type  => $<sym>.Str,
+		               rdata => ResourceRecordDataSOA.new(
+		                        domainName   => $<rdataSOA>.<domain_name>.Str,
+		                        domainAction => $<rdataSOA>.<rdataSOA_action_domain>.Str,
+		                        serial       => $<rdataSOA>.<rdataSOA_serial>.Str,
+		                        refresh      => $<rdataSOA>.<rdataSOA_refresh>.Str,
+		                        retry        => $<rdataSOA>.<rdataSOA_retry>.Str,
+		                        expire       => $<rdataSOA>.<rdataSOA_expire>.Str,
+		                        min          => $<rdataSOA>.<rdataSOA_min>.Str ) );
 	}
 
 	method rrSpace($/)

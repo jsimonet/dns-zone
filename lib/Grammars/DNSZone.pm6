@@ -1,6 +1,7 @@
 use v6;
 
-use Grammar::Debugger;
+# use Grammar::Debugger;
+use Grammar::Tracer;
 
 grammar DNSZone
 {
@@ -17,10 +18,10 @@ grammar DNSZone
 	rule TOP { [<line> ]+ }
 
 	token line {
-		^^ <rr> \h* <commentWithoutNewline>? <?{ ! $parenCount }> |
+		^^ <resourceRecord> \h* <commentWithoutNewline>? |
 			# { say "ParenCount is = $parenCount";} |
-		# ^^ <rr> \h* <commentWithoutNewline>? <?{ self.isParenCountOK( str => $/.Str ) ; }> |
-		# ^^ <rr> \h* <commentWithoutNewline>? |
+		# ^^ <resourceRecord> \h* <commentWithoutNewline>? <?{ self.isParenCountOK( str => $/.Str ) ; }> |
+		# ^^ <resourceRecord> \h* <commentWithoutNewline>? |
 		<comment> #|
 	}
 
@@ -29,10 +30,10 @@ grammar DNSZone
 	token comment               { ';' \N* \n? } # ;comment\n
 
 	# Resource record
-	token rr { [ <domain_name> <rrSpace>+ ]? <rrSpace>* <ttl_class> <type> <rrSpace>* }
+	token resourceRecord { [ <domain_name> <rrSpace>+ ]? <rrSpace>* <ttl_class> <type> <rrSpace>* }
 
 	# DOMAIN NAME
-	# can be null, or any of :
+	# can be any of :
 	# domain subdomain.domain domain.tld. @
 	proto token domain_name     { * }
 	token domain_name:sym<fqdn> { [ <[a..z0..9]>+ \.? ]+ }
@@ -58,7 +59,7 @@ grammar DNSZone
 	}
 
 	# TTL, can be:
-	# 42 1s 2m 3h 4j 5w 1y
+	# 42 1s 2m 3h 4j 5w 6y
 	token ttl {
 		<[0..9]>+ <[smhjwy]>?
 	}
@@ -174,16 +175,18 @@ grammar DNSZone
 	# for \n space, at least one ( have to be matched
 	token rrSpace {
 		\h                         |
-		\n <?{ $parenCount > 0; }> |
-		# \n |
+		# \n <?{ $parenCount > 0; }> |
+		\n |
 		<paren>
 	}
 
 	# PAREN
 	# Parenthese definition
 	proto token paren { * }
-	token paren:sym<po> { '(' { $parenCount++; } }
-	token paren:sym<pf> { ')' { $parenCount--; } <?{ $parenCount > 0; }>}
+	# token paren:sym<po> { '(' { $parenCount++; } }
+	token paren:sym<po> { '(' }
+	# token paren:sym<pf> { ')' { $parenCount--; } <?{ $parenCount > 0; }>}
+	token paren:sym<pf> { ')' }
 
 }
 

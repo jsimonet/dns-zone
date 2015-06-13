@@ -5,11 +5,11 @@ use ResourceRecordData;
 class ResourceRecordDataMX is ResourceRecordData
 {
 	has $.mxPref is rw;
-	has Str $.domain is rw;
+	has Str $.domainName is rw;
 
 	method gist()
-	{ return '(MXData mxpref='~$.mxPref~' domain='~$.domain~')'; }
+	{ return '(MXData mxpref='~$.mxPref~' domain='~$.domainName~')'; }
 
 	method Str()
-	{ return $.mxPref~' '~$.domain; }
+	{ return $.mxPref~' '~$.domainName; }
 }

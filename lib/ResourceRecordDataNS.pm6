@@ -4,11 +4,11 @@ use ResourceRecordData;
 
 class ResourceRecordDataNS is ResourceRecordData
 {
-	has Str $.domain is rw;
+	has Str $.domainName is rw;
 
 	method gist()
-	{ return "(Domain=$.domain)"; }
+	{ return "(Domain=$.domainName)"; }
 
 	method Str()
-	{ return $.domain; }
+	{ return $.domainName; }
 }

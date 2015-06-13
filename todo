@@ -9,3 +9,4 @@
 	- 1 parenthèse ) et une ( après ==> $parenthèsen == 0 ==> problème…
 - matcher les classes de façon « case insensitives » ;
 - ipv4 spéciales du style 0.0.0.0 ?
+- empty lines

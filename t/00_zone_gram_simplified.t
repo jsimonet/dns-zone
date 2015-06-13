@@ -37,8 +37,16 @@ my $test = 'bla IN A 10.0.0.42
 bouh IN MX 10 bla
 c IN CNAME bla
 @ IN NS ns0';
+# my $test = '@ IN SOA ns0.simonator.info. kernel.simonator.info. (
+# 	2015020801 ; serial
+# 	604800     ; refresh
+# 	86400      ; retry
+# 	2419200    ; expire
+# 	604800 )';
 $zones = DNSZone.parse($test, :actions($actions));
 say "my zones = "~$zones.ast.gist;
+# $zones = DNSZone.parse($test);
+# say "my zones = "~$zones;
 # Tests for specific rules
 # ok DNSZone.parse(";bla 42;2", rule => "comment" ),";bla 42;2";
 # ok DNSZone.parse( "domainname ", rule=>'rr_domain_name' );

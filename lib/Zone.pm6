@@ -11,7 +11,7 @@ class Zone
 	{
 		my $res = "(Zone=";
 		for @.rr
-		{ $res ~= .gist; }
+		{ $res ~= .gist~"; "; }
 		$res ~= ")";
 
 		return $res;
