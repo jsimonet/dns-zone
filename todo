@@ -1,6 +1,4 @@
-- for null values, get previous one (domain_name, ttl, class, …)
-- check that soa name server is defined below
-- noms de domaine unicode à transcoder en ASCII
+Grammar:
 - trouver un truc intelligent pour gérer les enregistrements multilignes
 	<anySpace> peut être un \n si on a déjà rencontré une ( ;
 	(05-03-2015) utilisation de <rrSpace> qui peut être un espace conventionel, ou une parenthèse (ouvrante ou fermante) ; 
@@ -10,3 +8,11 @@
 - matcher les classes de façon « case insensitives » ;
 - ipv4 spéciales du style 0.0.0.0 ?
 - empty lines
+
+Grammar action:
+- for null values, get previous one (domain_name, ttl, class, …)
+- check that soa name server is defined below
+- noms de domaine unicode à transcoder en ASCII
+
+To check:
+- In IPv6 rule : $<ipv4>.elems returns 0, $<ipv4><d8> returns 4, is it normal that $<ipv4>.elems returns 0 ?
