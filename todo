@@ -1,18 +1,22 @@
+General:
+- (re)construct a file zone based on lib/Zone.pm6 object ;
+	- use Match objects if ResourceRecord is not modified ;
+
 Grammar:
-- trouver un truc intelligent pour gérer les enregistrements multilignes
-	<anySpace> peut être un \n si on a déjà rencontré une ( ;
-	(05-03-2015) utilisation de <rrSpace> qui peut être un espace conventionel, ou une parenthèse (ouvrante ou fermante) ; 
-		dans le cas de la parenthèse un compteur est incrémenté. Le problème, c'est que le parser de la grammaire évalue 2 fois class, ce qui provoque un compte trop gros de ( ;
-		idem pour ) ;
-	- 1 parenthèse ) et une ( après ==> $parenthèsen == 0 ==> problème…
-- matcher les classes de façon « case insensitives » ;
-- ipv4 spéciales du style 0.0.0.0 ?
+- multiline entries have problems with parentheses count
+	- an <rrSpace> rule shoud only increment or decrement the count if rule
+		is valid ;
+	- the count should be valid any time, because we need it for \n validity ;
+- class names have to be insensitive (cname, CNAME, cName, etc.) ;
+- special IPv4, like 0.0.0.0 ?
 - empty lines
 
 Grammar action:
 - for null values, get previous one (domain_name, ttl, class, …)
-- check that soa name server is defined below
-- noms de domaine unicode à transcoder en ASCII
+- check that soa name server is defined above
+- unicode domain name to transcode to ASCII
+
 
 To check:
 - In IPv6 rule : $<ipv4>.elems returns 0, $<ipv4><d8> returns 4, is it normal that $<ipv4>.elems returns 0 ?
+- Some rules do not match if "use Grammar::Debugger" or "use Grammar::Tracer" are disabled ;
