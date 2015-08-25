@@ -10,6 +10,9 @@ Grammar:
 - class names have to be insensitive (cname, CNAME, cName, etc.) ;
 - special IPv4, like 0.0.0.0 ?
 - empty lines
+- error exception:
+	- get line, reason, enventually continue the parsing of the other lines ;
+- test with windows carriage return ;
 
 Grammar action:
 - for null values, get previous one (domain_name, ttl, class, …)
