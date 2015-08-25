@@ -1,7 +1,7 @@
 use v6;
 
 # use Grammar::Debugger;
-use Grammar::Tracer;
+# use Grammar::Tracer;
 
 grammar DNSZone
 {
@@ -53,8 +53,18 @@ grammar DNSZone
 	# 	''
 	# }
 
+	# Do not correct the problem because <rrSpace> is parsed anyway...
+	# token ttl_class {
+	# 	[ <class> | <ttl> ] ** 1..2 % [ <rrSpace>+ ] <rrSpace>+ <?{ $<class>.elems <= 1 && $<ttl>.elems <= 1; }> |
+	# 	''
+	# }
+
+	# A <class> or a <ttl>, is followed by a <rrSpace>.
+	# If no class or <ttl> are matched, no <rrSpace> either so parenthese
+	# count is ok
 	token ttl_class {
-		[ <class> | <ttl> ] ** 1..2 % [ <rrSpace>+ ] <rrSpace>+ <?{ $<class>.elems <= 1 && $<ttl>.elems <= 1; }> |
+		[ [ <class> | <ttl> ] <rrSpace>+ ] ** 1..2 <?{ $<class>.elems <= 1 && $<ttl>.elems <= 1; }> |
+		# [ [ <class> | <ttl> ] <rrSpace>+ ] [ [ <class> | <ttl> ] <rrSpace>+ ]? <?{ $<class>.elems <= 1 && $<ttl>.elems <= 1; }> |
 		''
 	}
 
@@ -230,18 +240,17 @@ grammar DNSZone
 	# for \n space, at least one ( have to be matched
 	token rrSpace {
 		\h                         |
-		# \n <?{ $parenCount > 0; }> |
-		\n |
+		\n <?{ $parenCount > 0; }> |
 		<paren>
 	}
 
 	# PAREN
 	# Parenthese definition
 	proto token paren { * }
-	# token paren:sym<po> { '(' { $parenCount++; } }
-	token paren:sym<po> { '(' }
-	# token paren:sym<pf> { ')' { $parenCount--; } <?{ $parenCount > 0; }>}
-	token paren:sym<pf> { ')' }
+	token paren:sym<po> { '(' { $parenCount++; } }
+	# token paren:sym<po> { '(' }
+	token paren:sym<pf> { ')' <?{ $parenCount > 0; }> { $parenCount--; } }
+	# token paren:sym<pf> { ')' }
 
 }
 

@@ -27,6 +27,9 @@ my @toTestAreOk = (
 	42s)
 	AAAA
 ) 1000:1000:1000:1000:2000:1000:1000:1000",
+	"testmultiline (
+	IN (
+	)) AAAA ::1",
 	'@ IN SOA ns0.simonator.info. kernel.simonator.info. 2015020801 604800 86400 2419200 604800 ; oneline soa',
 	'@ IN SOA ns0.simonator.info. kernel.simonator.info. (
 	2015020801 ; serial
