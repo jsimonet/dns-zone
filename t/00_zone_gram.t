@@ -16,6 +16,7 @@ use Grammars::DNSZone;
 my @toTestAreOk = (
 	'bla IN A 10.10.0.42',
 	"bla IN A 10.10.0.42\n",
+	"bla A 10.10.0.42",
 	'IN AAAA  2000:1000:1000:1000:2000:1000:1000:1000',
 	'testttl IN 42s A 10.0.0.42',
 	'testttl	 IN     42m A 10.0.0.42 ; different spaces',
