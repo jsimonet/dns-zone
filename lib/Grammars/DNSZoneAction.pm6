@@ -31,9 +31,9 @@ class DNSZoneAction
 	method resourceRecord($/)
 	{
 		# say "domain name = $<domain_name> ; ttl = "~$<ttl_class><ttl>.Numeric~" ; class = "~$<ttl_class><class>.Str~" ; type = "~$<type><type>.Str~" ; rdata = "~$<type><rdata>~" brut type="~$<type>;
-		make ResourceRecord.new( domainName => $<domain_name>.Str,
-		                         ttl        => $<ttl_class><ttl>.Numeric,
-		                         class      => $<ttl_class><class>.Str,
+		make ResourceRecord.new( domainName => $<domainName>.Str,
+		                         ttl        => $<ttlOrClass><ttl>.Numeric,
+		                         class      => $<ttlOrClass><class>.Str,
 		                         type       => $<type>.ast.type.Str,
 		                         rdata      => $<type>.ast.rdata );
 	}
@@ -59,22 +59,22 @@ class DNSZoneAction
 	{
 		make Type.new( type  => $<sym>.Str,
 		               rdata => ResourceRecordDataMX.new(
-		                        mxPref     => $<mxpref>,
-		                        domainName => $<domain_name>.Str) );
+		                        mxPref     => $<mxPref>,
+		                        domainName => $<domainName>.Str) );
 	}
 
 	method type:sym<CNAME>($/)
 	{
 		make Type.new( type  => $<sym>.Str,
 		               rdata => ResourceRecordDataCNAME.new(
-		                        domainName => $<domain_name>.Str) );
+		                        domainName => $<domainName>.Str) );
 	}
 
 	method type:sym<NS>($/)
 	{
 		make Type.new( type  => $<sym>.Str,
 		               rdata => ResourceRecordDataNS.new(
-		                        domainName => $<domain_name>.Str) );
+		                        domainName => $<domainName>.Str) );
 	}
 
 	method type:sym<SOA>($/)
@@ -82,13 +82,13 @@ class DNSZoneAction
 		# say "in soa maker";
 		make Type.new( type  => $<sym>.Str,
 		               rdata => ResourceRecordDataSOA.new(
-		                        domainName   => $<rdataSOA>.<domain_name>.Str,
-		                        domainAction => $<rdataSOA>.<rdataSOA_action_domain>.Str,
-		                        serial       => $<rdataSOA>.<rdataSOA_serial>.Str,
-		                        refresh      => $<rdataSOA>.<rdataSOA_refresh>.Str,
-		                        retry        => $<rdataSOA>.<rdataSOA_retry>.Str,
-		                        expire       => $<rdataSOA>.<rdataSOA_expire>.Str,
-		                        min          => $<rdataSOA>.<rdataSOA_min>.Str ) );
+		                        domainName   => $<rdataSOA>.<domainName>.Str,
+		                        domainAction => $<rdataSOA>.<rdataSOAActionDomain>.Str,
+		                        serial       => $<rdataSOA>.<rdataSOASerial>.Str,
+		                        refresh      => $<rdataSOA>.<rdataSOARefresh>.Str,
+		                        retry        => $<rdataSOA>.<rdataSOARetry>.Str,
+		                        expire       => $<rdataSOA>.<rdataSOAExpire>.Str,
+		                        min          => $<rdataSOA>.<rdataSOAMin>.Str ) );
 	}
 
 	method rrSpace($/)

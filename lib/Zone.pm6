@@ -9,9 +9,9 @@ class Zone
 
 	method gist()
 	{
-		my $res = "(Zone=";
+		my $res = "(Zone=\n";
 		for @.rr
-		{ $res ~= .gist~"; "; }
+		{ $res ~= "\t"~.gist~"\n"; }
 		$res ~= ")";
 
 		return $res;

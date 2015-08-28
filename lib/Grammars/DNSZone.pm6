@@ -1,28 +1,18 @@
 use v6;
 
 # use Grammar::Debugger;
-# use Grammar::Tracer;
+use Grammar::Tracer;
 
 grammar DNSZone
 {
 	my $parenCount=0; # Used to count opened parentheses
 
-	method isParenCountOK( Str :$str )
-	{
-		my $parenO = +$str.comb: /\(/;
-		my $parenF = +$str.comb: /\)/;
-		$parenO == $parenF;
-	}
-
-	# rule TOP { [ <line> ]+ { $parenCount=0; } }
-	rule TOP { [<line> ]+ }
+	rule TOP { [ <line> ]+ { $parenCount=0; } }
+	# rule TOP { [<line> ]+ }
 
 	token line {
 		^^ <resourceRecord> \h* <commentWithoutNewline>? |
-			# { say "ParenCount is = $parenCount";} |
-		# ^^ <resourceRecord> \h* <commentWithoutNewline>? <?{ self.isParenCountOK( str => $/.Str ) ; }> |
-		# ^^ <resourceRecord> \h* <commentWithoutNewline>? |
-		<comment> #|
+		<comment>
 	}
 
 	# COMMENTS
@@ -30,41 +20,22 @@ grammar DNSZone
 	token comment               { ';' \N* \n? } # ;comment\n
 
 	# Resource record
-	token resourceRecord { [ <domain_name> <rrSpace>+ ]? <rrSpace>* <ttl_class> <type> <rrSpace>* }
+	token resourceRecord { [ <domainName> <rrSpace>+ ]? <rrSpace>* <ttlOrClass> <type> <rrSpace>* }
 
 	# DOMAIN NAME
 	# can be any of :
 	# domain subdomain.domain domain.tld. @
-	proto token domain_name     { * }
-	token domain_name:sym<fqdn> { [ <[a..z0..9]>+ \.? ]+ }
-	token domain_name:sym<@>    { '@' }
+	proto token domainName     { * }
+	token domainName:sym<fqdn> { [ <[a..zA..Z0..9]>+ \.? ]+ }
+	token domainName:sym<@>    { '@' }
 
 	# TTL AND CLASS
 	# <ttl> & <class> are optionals
-	# TODO this token is problematic for parentheses count
-	# I stupidely increment & decrement $parenCount to know if a \n is legal but,
-	# two rules are parsed to check the existence of the second token
-	# --> <rrSpace> is called twice too, so $parenCount is incorrect.
-	# token ttl_class{
-	# 	<class> <rrSpace>+ <ttl>   <rrSpace>+ |
-	# 	<ttl>   <rrSpace>+ <class> <rrSpace>+ |
-	# 	<class>                    <rrSpace>+ |
-	# 	<ttl>                      <rrSpace>+ |
-	# 	''
-	# }
-
-	# Do not correct the problem because <rrSpace> is parsed anyway...
-	# token ttl_class {
-	# 	[ <class> | <ttl> ] ** 1..2 % [ <rrSpace>+ ] <rrSpace>+ <?{ $<class>.elems <= 1 && $<ttl>.elems <= 1; }> |
-	# 	''
-	# }
-
 	# A <class> or a <ttl>, is followed by a <rrSpace>.
 	# If no class or <ttl> are matched, no <rrSpace> either so parenthese
 	# count is ok
-	token ttl_class {
+	token ttlOrClass {
 		[ [ <class> | <ttl> ] <rrSpace>+ ] ** 1..2 <?{ $<class>.elems <= 1 && $<ttl>.elems <= 1; }> |
-		# [ [ <class> | <ttl> ] <rrSpace>+ ] [ [ <class> | <ttl> ] <rrSpace>+ ]? <?{ $<class>.elems <= 1 && $<ttl>.elems <= 1; }> |
 		''
 	}
 
@@ -89,7 +60,7 @@ grammar DNSZone
 	# token type:sym<APL>        { <sym> }
 	token type:sym<A6>         { <sym> <rrSpace>+ <rdataAAAA> }
 	# token type:sym<CERT>       { <sym> }
-	token type:sym<CNAME>      { <sym> <rrSpace>+ <domain_name> }
+	token type:sym<CNAME>      { <sym> <rrSpace>+ <domainName> }
 	# token type:sym<DHCID>      { <sym> }
 	# token type:sym<DNAME>      { <sym> }
 	# token type:sym<DNSKEY>     { <sym> }
@@ -101,9 +72,9 @@ grammar DNSZone
 	# token type:sym<KEY>        { <sym> }
 	# token type:sym<KX>         { <sym> }
 	# token type:sym<LOC>        { <sym> }
-	token type:sym<MX>         { <sym> \h+ <mxpref> \h+ <domain_name> }
+	token type:sym<MX>         { <sym> \h+ <mxPref> \h+ <domainName> }
 	# token type:sym<NAPTR>      { <sym> }
-	token type:sym<NS>         { <sym> \h+ <domain_name> }
+	token type:sym<NS>         { <sym> \h+ <domainName> }
 	# token type:sym<NSAP>       { <sym> }
 	# token type:sym<NSEC>       { <sym> }
 	# token type:sym<NSEC3>      { <sym> }
@@ -122,7 +93,6 @@ grammar DNSZone
 	# token type:sym<TXT>        { <sym> }
 	# token type:sym<WKS>        { <sym> }
 	# token type:sym<X25>        { <sym> }
-
 
 	# RDATA
 	# depends on TYPE
@@ -189,7 +159,6 @@ grammar DNSZone
 				)
 			)
 		}>
-
 	}
 
 	token doubleColon {
@@ -198,27 +167,27 @@ grammar DNSZone
 
 
 	# MX
-	token mxpref {
+	token mxPref {
 		\d ** 1..2
 	}
 
-	# TODO : check domain & rdataSOA_action_domain are correct
+	# TODO : check domain & rdataSOAActionDomain are correct
 	token rdataSOA {
-		<domain_name> <rrSpace>+ <rdataSOA_action_domain> <rrSpace>*
-		<rdataSOA_serial> <rrSpace>* <comment>?
-		<rrSpace>* <rdataSOA_refresh> <rrSpace>* <comment>?
-		<rrSpace>* <rdataSOA_retry>   <rrSpace>* <comment>?
-		<rrSpace>* <rdataSOA_expire>  <rrSpace>* <comment>?
-		# <rdataSOA_min>    [<rrSpace>* <comment>? <rrSpace>* ]*
-		<rrSpace>* <rdataSOA_min> <rrSpace>* <commentWithoutNewline>*
+		<domainName> <rrSpace>+ <rdataSOAActionDomain> <rrSpace>*
+		<rdataSOASerial> <rrSpace>* <comment>?
+		<rrSpace>* <rdataSOARefresh> <rrSpace>* <comment>?
+		<rrSpace>* <rdataSOARetry>   <rrSpace>* <comment>?
+		<rrSpace>* <rdataSOAExpire>  <rrSpace>* <comment>?
+		# <rdataSOAMin>    [<rrSpace>* <comment>? <rrSpace>* ]*
+		<rrSpace>* <rdataSOAMin> <rrSpace>* <commentWithoutNewline>*
 	}
 
-	token rdataSOA_action_domain { <domain_name> }
-	token rdataSOA_serial        { <d32>         }
-	token rdataSOA_refresh       { <d32>         }
-	token rdataSOA_retry         { <d32>         }
-	token rdataSOA_expire        { <d32>         }
-	token rdataSOA_min           { <d32>         }
+	token rdataSOAActionDomain { <domainName> }
+	token rdataSOASerial       { <d32>        }
+	token rdataSOARefresh      { <d32>        }
+	token rdataSOARetry        { <d32>        }
+	token rdataSOAExpire       { <d32>        }
+	token rdataSOAMin          { <d32>        }
 
 	# int 8 bits
 	token d8 {
@@ -248,9 +217,5 @@ grammar DNSZone
 	# Parenthese definition
 	proto token paren { * }
 	token paren:sym<po> { '(' { $parenCount++; } }
-	# token paren:sym<po> { '(' }
 	token paren:sym<pf> { ')' <?{ $parenCount > 0; }> { $parenCount--; } }
-	# token paren:sym<pf> { ')' }
-
 }
-

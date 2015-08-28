@@ -13,6 +13,7 @@ Grammar:
 - error exception:
 	- get line, reason, enventually continue the parsing of the other lines ;
 - test with windows carriage return ;
+- read user defined variable ($ttl)
 
 Grammar action:
 - for null values, get previous one (domain_name, ttl, class, …)
