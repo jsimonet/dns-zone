@@ -1,6 +1,7 @@
 General:
 - (re)construct a file zone based on lib/Zone.pm6 object ;
 	- use Match objects if ResourceRecord is not modified ;
+- include some bind 9 directive ? ($INCLUDE, $TTL, $GENERATED, etc.)
 
 Grammar:
 - multiline entries have problems with parentheses count
