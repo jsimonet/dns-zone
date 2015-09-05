@@ -16,7 +16,6 @@ class DNSZoneAction
 	my $parenCount=0;
 	method TOP($/)
 	{
-		# say "bla="~@<line>».ast;
 		make Zone.new( rr => @<line>».ast );
 	}
 

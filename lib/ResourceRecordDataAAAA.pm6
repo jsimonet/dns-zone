@@ -11,4 +11,7 @@ class ResourceRecordDataAAAA is ResourceRecordData
 
 	method Str()
 	{ return $.ip6Adress; }
+
+	method gen()
+	{ return $.ip6Adress; }
 }

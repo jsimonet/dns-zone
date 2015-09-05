@@ -25,4 +25,9 @@ class ResourceRecordDataSOA is ResourceRecordData
 
 	method Str()
 	{ }
+
+	method gen()
+	{
+		return "$.domainName $.domainAction $.serial $.refresh $.retry $.expire $.min";
+	}
 }

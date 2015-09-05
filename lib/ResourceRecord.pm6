@@ -11,9 +11,11 @@ class ResourceRecord
 	has Str                $.type       is rw;
 	has ResourceRecordData $.rdata      is rw;
 
+	has Bool               $!isModified is rw;
+
 	method gist()
 	{
-		return "(ResourceRecord Domain name="~$!domainName~", class="~$!class~", ttl="~$!ttl~", type="~$!type~", rdata="~$!rdata.gist~")";
+		return "(ResourceRecord DomainName="~$!domainName~", class="~$!class~", ttl="~$!ttl~", type="~$!type~", rdata="~$!rdata.gist~")";
 	}
 
 	method Str()
@@ -21,4 +23,8 @@ class ResourceRecord
 		return "Domain name="~$!domainName~", class="~$!class~", ttl="~$!ttl~", type="~$!type~", rdata="~$!rdata;
 	}
 
+	method gen()
+	{
+		return "$.domainName $.class $.ttl $.type "~$.rdata.gen();
+	}
 }

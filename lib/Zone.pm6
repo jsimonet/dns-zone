@@ -22,4 +22,23 @@ class Zone
 		return .Str for @.rr;
 	}
 
+	method addResourceRecord( ResourceRecord :$rr, Int :$position=-1 )
+	{
+		if 0 <= $position <= @.rr.elems
+		{
+			@.rr.splice( $position-1, 0, $rr );
+			# @.rr = splice( @.rr, $position-1, 0, $rr ); # Do not work ?
+		}
+		else
+		{
+			push @.rr, $rr;
+		}
+	}
+
+	method gen()
+	{
+		my $res = join "\n", map { .gen()}, @.rr;
+
+		return $res;
+	}
 }
