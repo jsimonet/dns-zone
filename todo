@@ -1,9 +1,9 @@
-General:
+# General:
 - (re)construct a file zone based on lib/Zone.pm6 object ;
 	- use Match objects if ResourceRecord is not modified ;
 - include some bind 9 directive ? ($INCLUDE, $TTL, $GENERATED, etc.)
 
-Grammar:
+# Grammar:
 - multiline entries have problems with parentheses count
 	- an <rrSpace> rule shoud only increment or decrement the count if rule
 		is valid ;
@@ -16,12 +16,14 @@ Grammar:
 - test with windows carriage return ;
 - read user defined variable ($ttl)
 
-Grammar action:
+# Grammar action:
 - for null values, get previous one (domain_name, ttl, class, …)
 - check that soa name server is defined above
 - unicode domain name to transcode to ASCII
+- when parsing an empty domain name, there is some problems when creating the corresponding AST
 
 
-To check:
+# To check:
 - In IPv6 rule : $<ipv4>.elems returns 0, $<ipv4><d8> returns 4, is it normal that $<ipv4>.elems returns 0 ?
 - Some rules do not match if "use Grammar::Debugger" or "use Grammar::Tracer" are disabled ;
+- in lib/Zone.pm6, « splice » has an strange comportement, depending it is used in OO way, or not.
