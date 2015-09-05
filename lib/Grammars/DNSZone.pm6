@@ -20,14 +20,17 @@ grammar DNSZone
 	token comment               { ';' \N* \n? } # ;comment\n
 
 	# Resource record
-	token resourceRecord { [ <domainName> <rrSpace>+ ]? <rrSpace>* <ttlOrClass> <type> <rrSpace>* }
+	# A domainName is needed, even if it is empty. In this case, the line have to begin
+	# with a space.
+	token resourceRecord { <domainName> <rrSpace>+ <ttlOrClass> <type> <rrSpace>* }
 
 	# DOMAIN NAME
 	# can be any of :
 	# domain subdomain.domain domain.tld. @
-	proto token domainName     { * }
-	token domainName:sym<fqdn> { [ <[a..zA..Z0..9]>+ \.? ]+ }
-	token domainName:sym<@>    { '@' }
+	proto token domainName      { * }
+	token domainName:sym<fqdn>  { [ <[a..zA..Z0..9]>+ \.? ]+ }
+	token domainName:sym<@>     { '@' }
+	token domainName:sym<empty> { '' }
 
 	# TTL AND CLASS
 	# <ttl> & <class> are optionals
