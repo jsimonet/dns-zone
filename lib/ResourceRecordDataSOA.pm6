@@ -4,13 +4,33 @@ use ResourceRecordData;
 
 class ResourceRecordDataSOA is ResourceRecordData
 {
-	has $.domainName   is rw;
-	has $.domainAction is rw;
-	has $.serial       is rw;
-	has $.refresh      is rw;
-	has $.retry        is rw;
-	has $.expire       is rw;
-	has $.min          is rw;
+	has $.domainName;
+	has $.domainAction;
+	has $.serial;
+	has $.refresh;
+	has $.retry;
+	has $.expire;
+	has $.min;
+
+	has $!changed = False;
+
+	method isChanged { $!changed }
+
+	method domainName   { self!proxy($!domainName) }
+	method domainAction { self!proxy($!domainName) }
+	method serial       { self!proxy($!serial)     }
+	method refresh      { self!proxy($!refresh)    }
+	method retry        { self!proxy($!retry)      }
+	method expire       { self!proxy($!expire)     }
+	method min          { self!proxy($!min)        }
+
+	method !proxy(\attr)
+	{
+		Proxy.new(
+			FETCH => { attr },
+			STORE => -> $, $value { $!changed = True; attr = $value }
+		);
+	}
 
 	method gist()
 	{
