@@ -80,7 +80,7 @@ for (@toTestAreNok) {
 # nok DNSZone.parse( 'aaaa:1234:4567::aaaa::1234:4567:7898',   rule => 'ipv6' );
 
 # my $any = "\n  	";
-# ok DNSZone.parse( $any, rule => 'anySpace' );
+# ok DNSZone.parse( $any, rule => 'rrSpace' );
 
 
 # Real test
