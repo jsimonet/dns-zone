@@ -53,6 +53,7 @@ Some sources for the grammar used.
 "Domain names - concepts and facilities", Mockapetris, P., STD 13, RFC 1034, DOI 10.17487/RFC1034, November 1987, <http://www.rfc-editor.org/info/rfc1034>.
 "Domain names - implementation and specification", Mockapetris, P., STD 13, RFC 1035, DOI 10.17487/RFC1035, November 1987, <http://www.rfc-editor.org/info/rfc1035>.
 "Punycode: A Bootstring encoding of Unicode for Internationalized Domain Names in Applications (IDNA)", Costello, A., RFC 3492, DOI 10.17487/RFC3492, March 2003, <http://www.rfc-editor.org/info/rfc3492>.
+"DoD Internet host table specification", Harrenstien, K., Stahl, M., and E. Feinler, RFC 952, DOI 10.17487/RFC0952, October 1985, <http://www.rfc-editor.org/info/rfc952>.
 
 ## Bind 9
 ftp://ftp.isc.org/isc/bind9/cur/9.10/doc/arm/Bv9ARM.pdf
