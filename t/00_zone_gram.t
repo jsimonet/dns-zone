@@ -64,11 +64,11 @@ for (@toTestAreNok) {
 
 # Tests for specific rules
 # ok DNSZone.parse(";bla 42;2", rule => "comment" ),";bla 42;2";
-# ok DNSZone.parse( "domainname ", rule=>'rr_domain_name' );
-# ok DNSZone.parse( "domainname.tld ", rule=>'rr_domain_name' );
-# ok DNSZone.parse( "domainname.tld. ", rule=>'rr_domain_name' );
-# ok DNSZone.parse( "@ ", rule=>'rr_domain_name' );
-# nok DNSZone.parse( 'domain@ ', rule => 'rr_domain_name' );
+# ok DNSZone.parse( "domainname ", rule=>'domainName' );
+# ok DNSZone.parse( "domainname.tld ", rule=>'domainName' );
+# ok DNSZone.parse( "domainname.tld. ", rule=>'domainName' );
+# ok DNSZone.parse( "@ ", rule=>'domainName' );
+# nok DNSZone.parse( 'domain@ ', rule => 'domainName' );
 
 # ok DNSZone.parse( '10.0.0.0',    rule => 'ipv4' );
 # ok DNSZone.parse( '30.0.0.100',  rule => 'ipv4' );

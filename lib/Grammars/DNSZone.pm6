@@ -6,6 +6,8 @@ use Grammar::Tracer;
 grammar DNSZone
 {
 	my $parenCount=0; # Used to count opened parentheses
+	my $maxDomainNameLengh      = 254;
+	my $maxLabelDomainNameLengh = 63;
 
 	rule TOP { [ <line> ]+ { $parenCount=0; } }
 	# rule TOP { [<line> ]+ }
@@ -28,9 +30,13 @@ grammar DNSZone
 	# can be any of :
 	# domain subdomain.domain domain.tld. @
 	proto token domainName      { * }
-	token domainName:sym<fqdn>  { [ <[a..zA..Z0..9]>+ \.? ]+ }
+	token domainName:sym<fqdn>  { <domainNameLabel> ** { 1 .. $maxDomainNameLengh/2 }  % '.' '.'? <?{ $/.Str.chars <= $maxDomainNameLengh; }> }
 	token domainName:sym<@>     { '@' }
 	token domainName:sym<empty> { '' }
+
+	token domainNameLabel {
+		<alnum> [ <alnum> | '-' ] ** {0 .. $maxLabelDomainNameLengh - 1}
+	}
 
 	# TTL AND CLASS
 	# <ttl> & <class> are optionals
