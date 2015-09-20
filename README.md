@@ -57,3 +57,6 @@ Some sources for the grammar used.
 
 ## Bind 9
 ftp://ftp.isc.org/isc/bind9/cur/9.10/doc/arm/Bv9ARM.pdf
+
+## Perl 6 Library
+Punnycode (encode/decode UTF-8 domains): https://github.com/FROGGS/p6-IDNA-Punycode/

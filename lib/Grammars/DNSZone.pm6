@@ -89,7 +89,7 @@ grammar DNSZone
 	# token type:sym<NSEC3>      { <sym> }
 	# token type:sym<NSEC3PARAM> { <sym> }
 	# token type:sym<NXT>        { <sym> }
-	# token type:sym<PTR>        { <sym> }
+	token type:sym<PTR>        { <sym> <rrSpace>+ <domainName> }
 	# token type:sym<PX>         { <sym> }
 	# token type:sym<RP>         { <sym> }
 	# token type:sym<RRSIG>      { <sym> }
@@ -123,7 +123,7 @@ grammar DNSZone
 	#   ^(^(([0-9A-F]{1,4}(((:[0-9A-F]{1,4}){5}::[0-9A-F]{1,4})|((:[0-9A-F]{1,4}){4}::[0-9A-F]{1,4}(:[0-9A-F]{1,4}){0,1})|((:[0-9A-F]{1,4}){3}::[0-9A-F]{1,4}(:[0-9A-F]{1,4}){0,2})|((:[0-9A-F]{1,4}){2}::[0-9A-F]{1,4}(:[0-9A-F]{1,4}){0,3})|(:[0-9A-F]{1,4}::[0-9A-F]{1,4}(:[0-9A-F]{1,4}){0,4})|(::[0-9A-F]{1,4}(:[0-9A-F]{1,4}){0,5})|(:[0-9A-F]{1,4}){7}))$|^(::[0-9A-F]{1,4}(:[0-9A-F]{1,4}){0,6})$)|^::$)|^((([0-9A-F]{1,4}(((:[0-9A-F]{1,4}){3}::([0-9A-F]{1,4}){1})|((:[0-9A-F]{1,4}){2}::[0-9A-F]{1,4}(:[0-9A-F]{1,4}){0,1})|((:[0-9A-F]{1,4}){1}::[0-9A-F]{1,4}(:[0-9A-F]{1,4}){0,2})|(::[0-9A-F]{1,4}(:[0-9A-F]{1,4}){0,3})|((:[0-9A-F]{1,4}){0,5})))|([:]{2}[0-9A-F]{1,4}(:[0-9A-F]{1,4}){0,4})):|::)((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{0,2})\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{0,2})$$
 	# @see t/ipv6.t
 
-	# Need to test sequencely <h16> part because some <d8> can be interpreted as <h16> tokens, like 
+	# Need to test sequencely <h16> part because some <d8> can be interpreted as <h16> tokens, like
 	# 1000::10.0.0.1 The "10" is interpreted as <h16> and <ipv6> token fails.
 	token ipv6 {
 		<doubleColon> <ipv4>

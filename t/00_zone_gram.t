@@ -40,6 +40,7 @@ my @toTestAreOk = (
 	604800 )   ; negative cache ttl
 	; soa is generally writed in multiline, with comments
 	; only one soa by zone definition',
+	'1.0.0.10.IN-ADDR.ARPA	IN	PTR	pointed',
 );
 
 my @toTestAreNok = (
@@ -64,6 +65,7 @@ for (@toTestAreNok) {
 
 # Tests for specific rules
 # ok DNSZone.parse(";bla 42;2", rule => "comment" ),";bla 42;2";
+# ok DNSZone.parse( "domainname ", rule=>'domainName' );
 # ok DNSZone.parse( "domainname ", rule=>'domainName' );
 # ok DNSZone.parse( "domainname.tld ", rule=>'domainName' );
 # ok DNSZone.parse( "domainname.tld. ", rule=>'domainName' );
@@ -91,4 +93,3 @@ for (@toTestAreNok) {
 # say $data;
 # ok DNSZone.parse( $data );
 # kfh.close;
-

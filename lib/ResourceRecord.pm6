@@ -11,7 +11,7 @@ class ResourceRecord
 	has Str                $.type       is rw;
 	has ResourceRecordData $.rdata      is rw;
 
-	has Bool               $!isModified is rw;
+	# has Bool               $.changed = False;
 
 	method gist()
 	{

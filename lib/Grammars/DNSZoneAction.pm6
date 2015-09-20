@@ -7,6 +7,7 @@ use ResourceRecordDataMX;
 use ResourceRecordDataCNAME;
 use ResourceRecordDataNS;
 use ResourceRecordDataSOA;
+use ResourceRecordDataPTR;
 use Zone;
 use Type;
 
@@ -88,6 +89,13 @@ class DNSZoneAction
 		                        retry        => $<rdataSOA>.<rdataSOARetry>.Str,
 		                        expire       => $<rdataSOA>.<rdataSOAExpire>.Str,
 		                        min          => $<rdataSOA>.<rdataSOAMin>.Str ) );
+	}
+
+	method type:sym<PTR>($/)
+	{
+		make Type.new( type => $<sym>.Str,
+		               rdata => ResourceRecordDataPTR.new(
+						        domainName => $<domainName>.Str) );
 	}
 
 	method rrSpace($/)
