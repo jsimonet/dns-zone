@@ -5,16 +5,16 @@ use Grammar::Tracer;
 
 grammar DNSZone
 {
-	my $parenCount=0; # Used to count opened parentheses
+	my $parenCount = 0; # Used to count opened parentheses
 	my $maxDomainNameLengh      = 254;
 	my $maxLabelDomainNameLengh = 63;
 
-	rule TOP { [ <line> ]+ { $parenCount=0; } }
+	token TOP { [ <line> ]+ { $parenCount = 0; } }
 	# rule TOP { [<line> ]+ }
 
 	token line {
-		^^ <resourceRecord> \h* <commentWithoutNewline>? |
-		<comment>
+		^^ <resourceRecord> \h* <commentWithoutNewline>? \v* |
+		<commentWithoutNewline> \v*
 	}
 
 	# COMMENTS
