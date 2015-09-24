@@ -14,12 +14,22 @@ grammar DNSZone
 
 	token line {
 		^^ <resourceRecord> \h* <commentWithoutNewline>? \v* |
+		<controlEntry> \v* |
 		<commentWithoutNewline> \v*
 	}
 
 	# COMMENTS
 	token commentWithoutNewline { ';' \N* }     # ;comment
 	token comment               { ';' \N* \n? } # ;comment\n
+
+	token controlEntry {
+		'$' <controlEntryAction>
+	}
+
+	proto token controlEntryAction { * }
+	token controlEntryAction:sym<TTL>     { <sym> \h+ <ttl>        }
+	token controlEntryAction:sym<ORIGIN>  { <sym> \h+ <domainName> }
+	#token controlEntryAction:sym<INCLUDE> { <sym> \h+ <fileName>   }
 
 	# Resource record
 	# A domainName is needed, even if it is empty. In this case, the line have to begin
@@ -33,6 +43,7 @@ grammar DNSZone
 	token domainName:sym<fqdn>  { <domainNameLabel> ** { 1 .. $maxDomainNameLengh/2 }  % '.' '.'? <?{ $/.Str.chars <= $maxDomainNameLengh; }> }
 	token domainName:sym<@>     { '@' }
 	token domainName:sym<empty> { '' }
+
 
 	token domainNameLabel {
 		<alnum> [ <alnum> | '-' ] ** {0 .. $maxLabelDomainNameLengh - 1}

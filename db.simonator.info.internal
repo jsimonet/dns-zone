@@ -1,4 +1,4 @@
-$TTL 1234
+;$TTL 1234
 ; more standard line
 ;@	IN	SOA	ns3.simonator.info. kernel.simonator.info.(
 ;			2015020801      ; Serial
@@ -6,10 +6,8 @@ $TTL 1234
 ;			     86400	; Retry
 ;			   2419200	; Expire
 ;			    604800	); Negative Cache TTL
-
 ; soa without parentheses
 ;@	IN	SOA	ns0.simonator.info. kernel.simonator.info.  2015020801 604800	86400	2419200	604800
-
 ; exotic soa form, valid
 @	IN	SOA	ns1.simonator.info.(
  kernel.simonator.info. (
@@ -31,4 +29,4 @@ web	IN	AAAA	2a01:e35:2ef5:24d0::129
 www	IN	CNAME	web
 www(
 IN	CNAME	web)
-
+1.0.0.10.IN-ADDR.ARPA IN PTR subdomain

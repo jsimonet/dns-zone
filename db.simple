@@ -1,1 +1,46 @@
-www  IN CNAME web
+$TtL    3600
+$origin example.com.
+
+
+example.com.    in              SOA     ns1.example.com. hostmaster.example.com. (
+                                        1234567890      ; Serial
+                                        86400           ; Refresh
+                                        3600            ; Retry
+                                        3600000         ; Expire
+                                        14400  )        ; Negative Cache TTL
+
+@                       123        NS      ns1.example.com.
+;@                               NS      ns2.example.com.
+;@                               A       127.0.0.1
+;@                               MX      10 mail1.example.com.
+;@                               MX      20 mail2.example.com.
+
+;@                              TXT     ("commented\" "()
+;"rr")
+
+abc                            PTR       127.0.0.1
+;ns1                              A       127.0.0.1
+ns1                              AaAa    ::1
+
+;ns2                             A       127.0.0.2
+;mail1                           A       127.0.0.1
+;mail2                           A       127.0.0.3
+;
+;test                          A         192.168.0.1
+;                                 AAAA    ::1
+;test-cname                      CNAME   test-a
+;test-reccname                   CNAME   test-cname
+;
+;; $INCLUDE db.include
+;
+;test-dupes                      A       127.0.0.1
+;test-dupes                      A       127.0.0.2
+;test-dupes                      A       127.0.0.3
+;
+;test-class              IN      A       127.0.0.1
+;test-ttl        400             A       127.0.0.1
+;test-ttlclass   400     IN      A       127.0.0.1
+;test-ttlclassr  IN      400     A       127.0.0.1
+;
+;test-origapp                    CNAME   test
+;

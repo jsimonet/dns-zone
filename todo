@@ -2,6 +2,9 @@
 - (re)construct a file zone based on lib/Zone.pm6 object ;
 	- use Match objects if ResourceRecord is not modified ;
 - include some bind 9 directive ? ($INCLUDE, $TTL, $GENERATED, etc.)
+- Two steps:
+	- first step: syntax parsing and AST building ;
+	- second step: semantic checks (domain name validity, TTL validity, etc.).
 
 # Grammar:
 - multiline entries have problems with parentheses count
@@ -15,6 +18,9 @@
 	- get line, reason, enventually continue the parsing of the other lines ;
 - test with windows carriage return ;
 - read user defined variable ($ttl)
+- a valid line after a "comment line" can be invalid
+- control entries ($ttl, $origin) (are case insensitive)
+	- using :i 'ttl' for example, works, but I need to get the corresponding value
 
 # Grammar action:
 - for null values, get previous one (domain_name, ttl, class, …)

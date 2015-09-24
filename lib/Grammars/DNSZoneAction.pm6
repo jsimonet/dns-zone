@@ -14,7 +14,15 @@ use Type;
 class DNSZoneAction
 {
 
-	my $parenCount=0;
+	my $parenCount = 0;
+
+	# Origin will be used to complete a domain name if it is not FQDN
+	has $!origin = '';
+
+	has $!currentTTL = 0;
+	has $!currentDomainName = '';
+
+
 	method TOP($/)
 	{
 		make Zone.new( rr => @<line>».ast );
@@ -27,9 +35,24 @@ class DNSZoneAction
 		make $<resourceRecord>.ast;
 	}
 
+	method controlEntryAction:sym<TTL>($/)
+	{
+		$!currentTTL = $<ttl>.Numeric;
+	}
+
+	method controlEntryAction:sym<ORIGIN>($/)
+	{
+		$!origin = $<domainName>.Str;
+	}
+
+	# Include a file into current zone
+	# @TODO
+	method controlEntryAction:sym<INCLUDE>($/)
+	{ }
 
 	method resourceRecord($/)
 	{
+		say "currentDomainName="~$!currentDomainName~" ; currentTTL="~$!currentTTL;
 		# say "domain name = $<domain_name> ; ttl = "~$<ttl_class><ttl>.Numeric~" ; class = "~$<ttl_class><class>.Str~" ; type = "~$<type><type>.Str~" ; rdata = "~$<type><rdata>~" brut type="~$<type>;
 		make ResourceRecord.new( domainName => $<domainName>.Str,
 		                         ttl        => $<ttlOrClass><ttl>.Numeric,
@@ -38,8 +61,15 @@ class DNSZoneAction
 		                         rdata      => $<type>.ast.rdata );
 	}
 
+	method domainName:sym<fqdn>($/)
+	{
+		$!currentDomainName = $/.Str;
+		make $/.Str;
+	}
+
 	method ttl($/)
 	{
+		$!currentTTL = +$/;
 		make +$/; # The + convert to int
 	}
 
