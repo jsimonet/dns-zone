@@ -3,7 +3,7 @@ use Test;
 
 # use Data::Dump qw( dump );
 
-BEGIN { @*INC.push('lib') };
+use lib 'lib';
 
 use Grammars::DNSZone;
 use Grammars::DNSZoneAction;

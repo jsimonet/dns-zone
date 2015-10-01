@@ -1,7 +1,7 @@
 use v6;
 use Test;
 
-BEGIN { @*INC.push('lib') };
+use lib 'lib';
 
 # Test file for zone grammar parsing.
 
