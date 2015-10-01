@@ -25,14 +25,20 @@ class DNSZoneAction
 
 	method TOP($/)
 	{
-		make Zone.new( rr => @<line>».ast );
+		# Add to the Zone object only ResourceRecord entries
+		make Zone.new(
+			rr => grep( { $_.ast ~~ ResourceRecord }, @<line> )».ast
+		);
 	}
 
 	method line($/)
 	{
 		$parenCount=0;
 		# say "resourceRecord = "~$<resourceRecord>.ast.gist;
-		make $<resourceRecord>.ast;
+		if $<resourceRecord>
+		{
+			make $<resourceRecord>.ast;
+		}
 	}
 
 	method controlEntryAction:sym<TTL>($/)

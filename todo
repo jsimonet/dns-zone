@@ -1,6 +1,7 @@
 # General:
 - (re)construct a file zone based on lib/Zone.pm6 object ;
 	- use Match objects if ResourceRecord is not modified ;
+	- a comment or a $[ttl|origin] are not of ResourceRecord, so .gen does not exists ;
 - include some bind 9 directive ? ($INCLUDE, $TTL, $GENERATED, etc.)
 - Two steps:
 	- first step: syntax parsing and AST building ;
