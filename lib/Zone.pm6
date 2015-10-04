@@ -37,7 +37,7 @@ class Zone
 
 	method gen()
 	{
-		my $res = join "\n", map { .gen()}, @.rr;
+		my $res = join "\n", map { .gen() }, @.rr;
 
 		return $res;
 	}

@@ -25,7 +25,7 @@ my $rr = ResourceRecord.new( domainName => 'new',
 	class => 'IN',
 	ttl   => 3600,
 	type  => 'A',
-	rr    => ResourceRecordDataA.new( ipAdress => '10.0.0.1' )
+	rdata => ResourceRecordDataA.new( ipAdress => '10.0.0.1' )
 );
 $match.made.addResourceRecord(rr => $rr, position => 3);
 

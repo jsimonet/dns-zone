@@ -23,12 +23,16 @@ class DNSZoneAction
 	has $!currentDomainName = '';
 
 
+	# @TODO Semantic analysis
 	method TOP($/)
 	{
 		# Add to the Zone object only ResourceRecord entries
 		make Zone.new(
 			rr => grep( { $_.ast ~~ ResourceRecord }, @<line> )».ast
 		);
+		# $<soa>.elems == 1
+		# $<NS>.elems > 0
+		# Check for errors
 	}
 
 	method line($/)
@@ -60,7 +64,9 @@ class DNSZoneAction
 	{
 		#say "currentDomainName="~$!currentDomainName~" ; currentTTL="~$!currentTTL;
 		# say "domain name = $<domainName> ; ttl = "~$<ttlOrClass><ttl>~ " ; class = "~ $<ttlOrClass><class>.Str~ " ; type = "~$<type>.ast.type.Str~ " ; rdata = "~$<type>.ast.rdata;
-		make ResourceRecord.new( domainName => $<domainName>.Str,
+		my $domainName = '';
+		$domainName = $<domainName>.Str if $<domainName>;;
+		make ResourceRecord.new( domainName => $domainName,
 		                         ttl        => $<ttlOrClass><ttl>.Str.Numeric,
 		                         class      => $<ttlOrClass><class>.Str,
 		                         type       => $<type>.ast.type.Str,

@@ -19,7 +19,7 @@ grammar DNSZone
 	}
 
 	# COMMENTS
-	token commentWithoutNewline { ';' \N* }     # ;comment
+	token commentWithoutNewline { ';' \N*     } # ;comment
 	token comment               { ';' \N* \n? } # ;comment\n
 
 	token controlEntry {

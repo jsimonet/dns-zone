@@ -11,4 +11,7 @@ class ResourceRecordDataPTR is ResourceRecordData
 
 	method Str()
 	{ return $.domainName; }
+
+	method gen()
+	{ return "$.domainName"; }
 }

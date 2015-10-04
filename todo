@@ -6,6 +6,7 @@
 - Two steps:
 	- first step: syntax parsing and AST building ;
 	- second step: semantic checks (domain name validity, TTL validity, etc.).
+- How to make an "abstract" class (for ResourceRecord, to force childs to implements all methods)
 
 # Grammar:
 - multiline entries have problems with parentheses count

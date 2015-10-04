@@ -12,4 +12,8 @@ class ResourceRecordDataMX is ResourceRecordData
 
 	method Str()
 	{ return $.mxPref~' '~$.domainName; }
+
+	method gen()
+	{ return "$.mxPref $.domainName"; }
+
 }
