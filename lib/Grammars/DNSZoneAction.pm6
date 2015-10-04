@@ -58,10 +58,10 @@ class DNSZoneAction
 
 	method resourceRecord($/)
 	{
-		say "currentDomainName="~$!currentDomainName~" ; currentTTL="~$!currentTTL;
-		# say "domain name = $<domain_name> ; ttl = "~$<ttl_class><ttl>.Numeric~" ; class = "~$<ttl_class><class>.Str~" ; type = "~$<type><type>.Str~" ; rdata = "~$<type><rdata>~" brut type="~$<type>;
+		#say "currentDomainName="~$!currentDomainName~" ; currentTTL="~$!currentTTL;
+		# say "domain name = $<domainName> ; ttl = "~$<ttlOrClass><ttl>~ " ; class = "~ $<ttlOrClass><class>.Str~ " ; type = "~$<type>.ast.type.Str~ " ; rdata = "~$<type>.ast.rdata;
 		make ResourceRecord.new( domainName => $<domainName>.Str,
-		                         ttl        => $<ttlOrClass><ttl>.Numeric,
+		                         ttl        => $<ttlOrClass><ttl>.Str.Numeric,
 		                         class      => $<ttlOrClass><class>.Str,
 		                         type       => $<type>.ast.type.Str,
 		                         rdata      => $<type>.ast.rdata );
@@ -70,6 +70,16 @@ class DNSZoneAction
 	method domainName:sym<fqdn>($/)
 	{
 		$!currentDomainName = $/.Str;
+		make $/.Str;
+	}
+
+	method domainName:sym<labeled>($/)
+	{
+		make $/.Str;
+	}
+
+	method domainName:sym<@>($/)
+	{
 		make $/.Str;
 	}
 
@@ -131,7 +141,7 @@ class DNSZoneAction
 	{
 		make Type.new( type => $<sym>.Str,
 		               rdata => ResourceRecordDataPTR.new(
-						        domainName => $<domainName>.Str) );
+		                        domainName => $<domainName>.Str) );
 	}
 
 	method rrSpace($/)

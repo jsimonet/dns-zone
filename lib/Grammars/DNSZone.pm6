@@ -34,16 +34,28 @@ grammar DNSZone
 	# Resource record
 	# A domainName is needed, even if it is empty. In this case, the line have to begin
 	# with a space.
-	token resourceRecord { <domainName> <rrSpace>+ <ttlOrClass> <type> <rrSpace>* }
+	token resourceRecord { [ <domainName> | '' ] <rrSpace>+ <ttlOrClass> <type> <rrSpace>* }
 
 	# DOMAIN NAME
 	# can be any of :
 	# domain subdomain.domain domain.tld. @
-	proto token domainName      { * }
-	token domainName:sym<fqdn>  { <domainNameLabel> ** { 1 .. $maxDomainNameLengh/2 }  % '.' '.'? <?{ $/.Str.chars <= $maxDomainNameLengh; }> }
-	token domainName:sym<@>     { '@' }
-	token domainName:sym<empty> { '' }
+	proto token domainName        { * }
 
+	token domainName:sym<fqdn>    {
+		# Same as labeled but with a final dot
+		<domainNameLabel> ** { 1 .. $maxDomainNameLengh/2 }  % '.' '.'
+		<?{
+			$/.Str.chars <= $maxDomainNameLengh;
+			#$/ ~~ /$origin\.$/; # TODO must ends with "$origin."
+		}>
+	}
+
+	token domainName:sym<labeled> {
+		<domainNameLabel> ** { 1 .. $maxDomainNameLengh/2 }  % '.'
+		#<?{ $/.Str.chars + 1 + $origin.chars < $maxDomainNameLengh; }>
+	}
+
+	token domainName:sym<@>       { '@' }
 
 	token domainNameLabel {
 		<alnum> [ <alnum> | '-' ] ** {0 .. $maxLabelDomainNameLengh - 1}
