@@ -8,7 +8,7 @@ class ResourceRecord
 	has Str                $.domainName       is rw = '';
 	has Str                $.domainNameParsed is rw = ''; # For origin/previous domain
 	has Str                $.class            is rw = '';
-	has Int                $.ttl              is rw = 0;
+	has Str                $.ttl              is rw = '';
 	has Str                $.type             is rw = '';
 	has ResourceRecordData $.rdata            is rw;
 

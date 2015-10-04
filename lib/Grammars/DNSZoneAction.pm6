@@ -19,7 +19,7 @@ class DNSZoneAction
 	# Origin will be used to complete a domain name if it is not FQDN
 	has $!origin = '';
 
-	has $!currentTTL = 0;
+	has $!currentTTL = '';
 	has $!currentDomainName = '';
 
 
@@ -47,7 +47,7 @@ class DNSZoneAction
 
 	method controlEntryAction:sym<TTL>($/)
 	{
-		$!currentTTL = $<ttl>.Numeric;
+		$!currentTTL = $<ttl>;
 	}
 
 	method controlEntryAction:sym<ORIGIN>($/)
@@ -67,7 +67,7 @@ class DNSZoneAction
 		my $domainName = '';
 		$domainName = $<domainName>.Str if $<domainName>;;
 		make ResourceRecord.new( domainName => $domainName,
-		                         ttl        => $<ttlOrClass><ttl>.Str.Numeric,
+		                         ttl        => $<ttlOrClass><ttl>.Str,
 		                         class      => $<ttlOrClass><class>.Str,
 		                         type       => $<type>.ast.type.Str,
 		                         rdata      => $<type>.ast.rdata );

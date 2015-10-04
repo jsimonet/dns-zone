@@ -9,6 +9,8 @@ grammar DNSZone
 	my $maxDomainNameLengh      = 254;
 	my $maxLabelDomainNameLengh = 63;
 
+	my $currentTTL;
+
 	token TOP { [ <line> ]+ { $parenCount = 0; } }
 	# rule TOP { [<line> ]+ }
 
@@ -27,14 +29,21 @@ grammar DNSZone
 	}
 
 	proto token controlEntryAction { * }
-	token controlEntryAction:sym<TTL>     { <sym> \h+ <ttl>        }
+	token controlEntryAction:sym<TTL>     {
+		<sym> \h+ <ttl>
+		{ $currentTTL = $<ttl>.Str.Numeric; }
+	}
+
 	token controlEntryAction:sym<ORIGIN>  { <sym> \h+ <domainName> }
 	#token controlEntryAction:sym<INCLUDE> { <sym> \h+ <fileName>   }
 
 	# Resource record
 	# A domainName is needed, even if it is empty. In this case, the line have to begin
 	# with a space.
-	token resourceRecord { [ <domainName> | '' ] <rrSpace>+ <ttlOrClass> <type> <rrSpace>* }
+	token resourceRecord {
+		[ <domainName> | '' ] <rrSpace>+ <ttlOrClass> <type> <rrSpace>*
+		<?{ defined $currentTTL; }>
+	}
 
 	# DOMAIN NAME
 	# can be any of :
@@ -212,6 +221,12 @@ grammar DNSZone
 		<rrSpace>* <rdataSOAExpire>  <rrSpace>* <comment>?
 		# <rdataSOAMin>    [<rrSpace>* <comment>? <rrSpace>* ]*
 		<rrSpace>* <rdataSOAMin> <rrSpace>* <commentWithoutNewline>*
+
+		{
+			unless defined $currentTTL {
+				$currentTTL = $<rdataSOAMin>.Str.Numeric unless $currentTTL;
+			}
+		}
 	}
 
 	token rdataSOAActionDomain { <domainName> }
