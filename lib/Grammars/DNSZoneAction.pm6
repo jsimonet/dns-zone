@@ -74,20 +74,13 @@ class DNSZoneAction
 	}
 
 	method domainName:sym<fqdn>($/)
-	{
-		$!currentDomainName = $/.Str;
-		make $/.Str;
-	}
+	{ make $/.Str; }
 
 	method domainName:sym<labeled>($/)
-	{
-		make $/.Str;
-	}
+	{ make $/.Str; }
 
 	method domainName:sym<@>($/)
-	{
-		make $/.Str;
-	}
+	{ make $/.Str; }
 
 	method ttl($/)
 	{

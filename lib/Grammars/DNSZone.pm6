@@ -9,6 +9,7 @@ grammar DNSZone
 	my $maxDomainNameLengh      = 254;
 	my $maxLabelDomainNameLengh = 63;
 
+	my $currentDomainName;
 	my $currentTTL;
 
 	token TOP { [ <line> ]+ { $parenCount = 0; } }
@@ -42,20 +43,20 @@ grammar DNSZone
 	# with a space.
 	token resourceRecord {
 		[ <domainName> | '' ] <rrSpace>+ <ttlOrClass> <type> <rrSpace>*
-		<?{ defined $currentTTL; }>
+		{ $currentDomainName = $<domainName>.Str if $<domainName>; }
+		<?{ $currentTTL && $currentDomainName; }>
 	}
 
 	# DOMAIN NAME
 	# can be any of :
 	# domain subdomain.domain domain.tld. @
-	proto token domainName        { * }
+	proto token domainName { * }
 
-	token domainName:sym<fqdn>    {
+	token domainName:sym<fqdn> {
 		# Same as labeled but with a final dot
 		<domainNameLabel> ** { 1 .. $maxDomainNameLengh/2 }  % '.' '.'
 		<?{
 			$/.Str.chars <= $maxDomainNameLengh;
-			#$/ ~~ /$origin\.$/; # TODO must ends with "$origin."
 		}>
 	}
 
@@ -64,7 +65,7 @@ grammar DNSZone
 		#<?{ $/.Str.chars + 1 + $origin.chars < $maxDomainNameLengh; }>
 	}
 
-	token domainName:sym<@>       { '@' }
+	token domainName:sym<@> { '@' }
 
 	token domainNameLabel {
 		<alnum> [ <alnum> | '-' ] ** {0 .. $maxLabelDomainNameLengh - 1}
