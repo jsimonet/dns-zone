@@ -7,6 +7,7 @@ grammar DNSZone
 {
 	my $parenCount = 0; # Used to count opened parentheses
 	my $maxDomainNameLengh      = 254;
+	my $maxRdataTXTLengh        = 255;
 	my $maxLabelDomainNameLengh = 63;
 
 	my $currentDomainName;
@@ -16,7 +17,7 @@ grammar DNSZone
 	# rule TOP { [<line> ]+ }
 
 	token line {
-		^^ <resourceRecord> \h* <commentWithoutNewline>? \v* |
+		^^ <resourceRecord> \h* <commentWithoutNewline>? \v* <?{ $parenCount == 0; }> |
 		<controlEntry> \v* |
 		<commentWithoutNewline> \v*
 	}
@@ -132,7 +133,7 @@ grammar DNSZone
 	# token type:sym<SPF>        { <sym> }
 	# token type:sym<SRV>        { <sym> }
 	# token type:sym<SSHFP>      { <sym> }
-	# token type:sym<TXT>        { <sym> }
+	token type:sym<TXT>        { <sym> <rrSpace>+ <rdataTXT> }
 	# token type:sym<WKS>        { <sym> }
 	# token type:sym<X25>        { <sym> }
 
@@ -236,6 +237,21 @@ grammar DNSZone
 	token rdataSOARetry        { <d32>        }
 	token rdataSOAExpire       { <d32>        }
 	token rdataSOAMin          { <d32>        }
+
+	token rdataTXT {
+		[ <text> | <quotedText> ]+
+		<?{ $/.Str.chars < $maxRdataTXTLengh }>
+	}
+
+	# A suit of chars, without spaces
+	token text {
+		[ <-[ ( ) \v " \ ]> | <rrSpace> | '\"']+
+	}
+
+	# A suit of chars, with space availables
+	token quotedText {
+		'"' [ <-[ \n " ]> | "\\\n" | '\"' ]* '"'
+	}
 
 	# int 8 bits
 	token d8 {

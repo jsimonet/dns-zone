@@ -8,6 +8,7 @@ use ResourceRecordDataCNAME;
 use ResourceRecordDataNS;
 use ResourceRecordDataSOA;
 use ResourceRecordDataPTR;
+use ResourceRecordDataTXT;
 use Zone;
 use Type;
 
@@ -141,6 +142,13 @@ class DNSZoneAction
 		make Type.new( type => $<sym>.Str,
 		               rdata => ResourceRecordDataPTR.new(
 		                        domainName => $<domainName>.Str) );
+	}
+
+	method type:sym<TXT>($/)
+	{
+		make Type.new( type => $<sym>.Str,
+		               rdata => ResourceRecordDataTXT.new(
+		                        txt => $<rdataTXT>.Str ) );
 	}
 
 	method rrSpace($/)
