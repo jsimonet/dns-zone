@@ -91,19 +91,19 @@ class DNSZoneAction
 
 	method type:sym<A>($/)
 	{
-		make Type.new( type  => ""~$<sym>,
+		make Type.new( type  => $<typeName>.Str,
 		               rdata => ResourceRecordDataA.new(ipAdress => $<rdataA>.Str) );
 	}
 
 	method type:sym<AAAA>($/)
 	{
-		make Type.new( type  => $<sym>.Str,
+		make Type.new( type  => $<typeName>.Str,
 		               rdata => ResourceRecordDataAAAA.new(ip6Adress => $<rdataAAAA>.Str) );
 	}
 
 	method type:sym<MX>($/)
 	{
-		make Type.new( type  => $<sym>.Str,
+		make Type.new( type  => $<typeName>.Str,
 		               rdata => ResourceRecordDataMX.new(
 		                        mxPref     => $<mxPref>,
 		                        domainName => $<domainName>.Str) );
@@ -111,14 +111,14 @@ class DNSZoneAction
 
 	method type:sym<CNAME>($/)
 	{
-		make Type.new( type  => $<sym>.Str,
+		make Type.new( type  => $<typeName>.Str,
 		               rdata => ResourceRecordDataCNAME.new(
 		                        domainName => $<domainName>.Str) );
 	}
 
 	method type:sym<NS>($/)
 	{
-		make Type.new( type  => $<sym>.Str,
+		make Type.new( type  => $<typeName>.Str,
 		               rdata => ResourceRecordDataNS.new(
 		                        domainName => $<domainName>.Str) );
 	}
@@ -126,7 +126,7 @@ class DNSZoneAction
 	method type:sym<SOA>($/)
 	{
 		# say "in soa maker";
-		make Type.new( type  => $<sym>.Str,
+		make Type.new( type  => $<typeName>.Str,
 		               rdata => ResourceRecordDataSOA.new(
 		                        domainName   => $<rdataSOA>.<domainName>.Str,
 		                        domainAction => $<rdataSOA>.<rdataSOAActionDomain>.Str,
@@ -139,14 +139,14 @@ class DNSZoneAction
 
 	method type:sym<PTR>($/)
 	{
-		make Type.new( type => $<sym>.Str,
+		make Type.new( type => $<typeName>.Str,
 		               rdata => ResourceRecordDataPTR.new(
 		                        domainName => $<domainName>.Str) );
 	}
 
 	method type:sym<TXT>($/)
 	{
-		make Type.new( type => $<sym>.Str,
+		make Type.new( type => $<typeName>.Str,
 		               rdata => ResourceRecordDataTXT.new(
 		                        txt => $<rdataTXT>.Str ) );
 	}

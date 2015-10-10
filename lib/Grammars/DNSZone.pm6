@@ -91,51 +91,51 @@ grammar DNSZone
 	# CLASS
 	# TODO : case insensitive
 	proto token class   { * }
-	token class:sym<IN> { <sym> } # The Internet
-	token class:sym<CH> { <sym> } # Chaosnet
-	token class:sym<HS> { <sym> } # Hesiod
+	token class:sym<IN> { $<sym> = [ :i 'in' ] } # The Internet
+	token class:sym<CH> { $<sym> = [ :i 'ch' ] } # Chaosnet
+	token class:sym<HS> { $<sym> = [ :i 'hs' ] } # Hesiod
 
 	# TYPE
 	proto token type           { * }
-	token type:sym<A>          { <sym> <rrSpace>+ <rdataA> }
-	token type:sym<AAAA>       { <sym> <rrSpace>+ <rdataAAAA> }
-	# token type:sym<AFSDB>      { <sym> }
-	# token type:sym<APL>        { <sym> }
-	token type:sym<A6>         { <sym> <rrSpace>+ <rdataAAAA> }
-	# token type:sym<CERT>       { <sym> }
-	token type:sym<CNAME>      { <sym> <rrSpace>+ <domainName> }
-	# token type:sym<DHCID>      { <sym> }
-	# token type:sym<DNAME>      { <sym> }
-	# token type:sym<DNSKEY>     { <sym> }
-	# token type:sym<DS>         { <sym> }
-	# token type:sym<GPOS>       { <sym> }
-	# token type:sym<HINFO>      { <sym> }
-	# token type:sym<IPSECKEY>   { <sym> }
-	# token type:sym<ISDN>       { <sym> }
-	# token type:sym<KEY>        { <sym> }
-	# token type:sym<KX>         { <sym> }
-	# token type:sym<LOC>        { <sym> }
-	token type:sym<MX>         { <sym> \h+ <mxPref> \h+ <domainName> }
-	# token type:sym<NAPTR>      { <sym> }
-	token type:sym<NS>         { <sym> \h+ <domainName> }
-	# token type:sym<NSAP>       { <sym> }
-	# token type:sym<NSEC>       { <sym> }
-	# token type:sym<NSEC3>      { <sym> }
-	# token type:sym<NSEC3PARAM> { <sym> }
-	# token type:sym<NXT>        { <sym> }
-	token type:sym<PTR>        { <sym> <rrSpace>+ <domainName> }
-	# token type:sym<PX>         { <sym> }
-	# token type:sym<RP>         { <sym> }
-	# token type:sym<RRSIG>      { <sym> }
-	# token type:sym<RT>         { <sym> }
-	token type:sym<SOA>        { <sym> \h+ <rdataSOA> }
-	# token type:sym<SIG>        { <sym> }
-	# token type:sym<SPF>        { <sym> }
-	# token type:sym<SRV>        { <sym> }
-	# token type:sym<SSHFP>      { <sym> }
-	token type:sym<TXT>        { <sym> <rrSpace>+ <rdataTXT> }
-	# token type:sym<WKS>        { <sym> }
-	# token type:sym<X25>        { <sym> }
+	token type:sym<A>          { $<typeName> = [ :i 'a' ] <rrSpace>+ <rdataA> }
+	token type:sym<AAAA>       { $<typeName> = [ :i 'aaaa' ] <rrSpace>+ <rdataAAAA> }
+	# token type:sym<AFSDB>      { <$typeName> = '' }
+	# token type:sym<APL>        { <$typeName> = '' }
+	token type:sym<A6>         { $<typeName> = [ :i 'a6' ] <rrSpace>+ <rdataAAAA> }
+	# token type:sym<CERT>       { <$typeName> = '' }
+	token type:sym<CNAME>      { $<typeName> = [ :i 'cname' ] <rrSpace>+ <domainName> }
+	# token type:sym<DHCID>      { <$typeName> = '' }
+	# token type:sym<DNAME>      { <$typeName> = '' }
+	# token type:sym<DNSKEY>     { <$typeName> = '' }
+	# token type:sym<DS>         { <$typeName> = '' }
+	# token type:sym<GPOS>       { <$typeName> = '' }
+	# token type:sym<HINFO>      { <$typeName> = '' }
+	# token type:sym<IPSECKEY>   { <$typeName> = '' }
+	# token type:sym<ISDN>       { <$typeName> = '' }
+	# token type:sym<KEY>        { <$typeName> = '' }
+	# token type:sym<KX>         { <$typeName> = '' }
+	# token type:sym<LOC>        { <$typeName> = '' }
+	token type:sym<MX>         { $<typeName> = [ :i 'mx' ] \h+ <mxPref> \h+ <domainName> }
+	# token type:sym<NAPTR>      { <$typeName> = '' }
+	token type:sym<NS>         { $<typeName> = [ :i 'ns' ] \h+ <domainName> }
+	# token type:sym<NSAP>       { <$typeName> = '' }
+	# token type:sym<NSEC>       { <$typeName> = '' }
+	# token type:sym<NSEC3>      { <$typeName> = '' }
+	# token type:sym<NSEC3PARAM> { <$typeName> = '' }
+	# token type:sym<NXT>        { <$typeName> = '' }
+	token type:sym<PTR>        { $<typeName> = [ :i 'ptr' ] <rrSpace>+ <domainName> }
+	# token type:sym<PX>         { <$typeName> = '' }
+	# token type:sym<RP>         { <$typeName> = '' }
+	# token type:sym<RRSIG>      { <$typeName> = '' }
+	# token type:sym<RT>         { <$typeName> = '' }
+	token type:sym<SOA>        { $<typeName> = [ :i 'soa' ] \h+ <rdataSOA> }
+	# token type:sym<SIG>        { <$typeName> = '' }
+	token type:sym<SPF>        { $<typeName> = [ :i 'spf' ] ' test' }
+	token type:sym<SRV>        { $<typeName> = [ :i 'srv' ] <rrSpace>+ <rdataSRV> }
+	# token type:sym<SSHFP>      { <$typeName> = '' }
+	token type:sym<TXT>        { $<typeName> = [ :i 'txt' ] <rrSpace>+ <rdataTXT> }
+	# token type:sym<WKS>        { <$typeName> = '' }
+	# token type:sym<X25>        { <$typeName> = '' }
 
 	# RDATA
 	# depends on TYPE
