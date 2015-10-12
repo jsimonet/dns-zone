@@ -31,13 +31,13 @@ grammar DNSZone
 	}
 
 	proto token controlEntryAction { * }
-	token controlEntryAction:sym<TTL>     {
-		<sym> \h+ <ttl>
+	token controlEntryAction:sym<TTL> {
+		[ :i 'ttl' ] \h+ <ttl>
 		{ $currentTTL = $<ttl>.Str.Numeric; }
 	}
 
-	token controlEntryAction:sym<ORIGIN>  { <sym> \h+ <domainName> }
-	#token controlEntryAction:sym<INCLUDE> { <sym> \h+ <fileName>   }
+	token controlEntryAction:sym<ORIGIN>  { [ :i 'origin' ] \h+ <domainName> }
+	#token controlEntryAction:sym<INCLUDE> { [:i 'include'] \h+ <fileName>   }
 
 	# Resource record
 	# A domainName is needed, even if it is empty. In this case, the line have to begin
