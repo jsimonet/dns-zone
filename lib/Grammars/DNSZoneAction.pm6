@@ -16,16 +16,6 @@ use Type;
 class DNSZoneAction
 {
 
-	my $parenCount = 0;
-
-	# Origin will be used to complete a domain name if it is not FQDN
-	has $!origin = '';
-
-	has $!currentTTL = '';
-	has $!currentDomainName = '';
-
-
-	# @TODO Semantic analysis
 	method TOP($/)
 	{
 		# Add to the Zone object only ResourceRecord entries
@@ -39,22 +29,10 @@ class DNSZoneAction
 
 	method line($/)
 	{
-		$parenCount=0;
-		# say "resourceRecord = "~$<resourceRecord>.ast.gist;
 		if $<resourceRecord>
 		{
 			make $<resourceRecord>.ast;
 		}
-	}
-
-	method controlEntryAction:sym<TTL>($/)
-	{
-		$!currentTTL = $<ttl>;
-	}
-
-	method controlEntryAction:sym<ORIGIN>($/)
-	{
-		$!origin = $<domainName>.Str;
 	}
 
 	# Include a file into current zone
@@ -64,10 +42,9 @@ class DNSZoneAction
 
 	method resourceRecord($/)
 	{
-		#say "currentDomainName="~$!currentDomainName~" ; currentTTL="~$!currentTTL;
 		# say "domain name = $<domainName> ; ttl = "~$<ttlOrClass><ttl>~ " ; class = "~ $<ttlOrClass><class>.Str~ " ; type = "~$<type>.ast.type.Str~ " ; rdata = "~$<type>.ast.rdata;
 		my $domainName = '';
-		$domainName = $<domainName>.Str if $<domainName>;;
+		$domainName = $<domainName>.Str if $<domainName>.chars;
 		make ResourceRecord.new( domainName => $domainName,
 		                         ttl        => $<ttlOrClass><ttl>.Str,
 		                         class      => $<ttlOrClass><class>.Str,
@@ -86,7 +63,6 @@ class DNSZoneAction
 
 	method ttl($/)
 	{
-		$!currentTTL = +$/;
 		make +$/; # The + convert to int
 	}
 
