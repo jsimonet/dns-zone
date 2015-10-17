@@ -3,17 +3,35 @@ use v6;
 # use Grammar::Debugger;
 use Grammar::Tracer;
 
-grammar DNSZone
-{
-	my $parenCount = 0; # Used to count opened parentheses
-	my $maxDomainNameLengh      = 254;
-	my $maxRdataTXTLengh        = 255;
+=begin pod
+=synopsis Grammar to parse a dns zone file, RFC 1035 compliant.
+=author Julien Simonet
+=version 0.1
+=end pod
+grammar DNSZone {
+	# Used to count opened parentheses.
+	my $parenCount = 0;
+
+	# Used to check the domain name lengh.
+	my $maxDomainNameLengh = 254;
+
+	# Used to check the TXT data.
+	my $maxRdataTXTLengh = 255;
+
+	# Each parts of a domain name (insided '.') can have a maximum lengh.
 	my $maxLabelDomainNameLengh = 63;
 
+	# The last encountered domain name
 	my $currentDomainName;
+
+	# The last encountered ttl
 	my $currentTTL;
 
-	token TOP { [ <line> ]+ { $parenCount = 0; } }
+	# TODO
+	# The origin of the zone, used to check if domains are inside the zone,
+	# and to check if NS is defined
+	my $origin = '';
+
 
 	token line {
 		^^ <resourceRecord> \h* <commentWithoutNewline>? \v* <?{ $parenCount == 0; }> |
@@ -25,6 +43,8 @@ grammar DNSZone
 	token commentWithoutNewline { ';' \N*     } # ;comment
 	token comment               { ';' \N* \n? } # ;comment\n
 
+	# CONTROL ENTRIES
+	# Used to set variable values, like TTL or ORIGIN.
 	token controlEntry {
 		'$' <controlEntryAction>
 	}
@@ -36,6 +56,7 @@ grammar DNSZone
 	}
 
 	token controlEntryAction:sym<ORIGIN>  { [ :i 'origin' ] \h+ <domainName> }
+	# TODO
 	#token controlEntryAction:sym<INCLUDE> { [:i 'include'] \h+ <fileName>   }
 
 	# Resource record
@@ -92,12 +113,12 @@ grammar DNSZone
 
 	# TTL, can be:
 	# 42 1s 2m 3h 4j 5w 6y
+	# TODO check that ttl value is an d32
 	token ttl {
-		<[0..9]>+ <[smhjwy]>?
+		<[0..9]>+ <[smhdwy]>?
 	}
 
 	# CLASS
-	# TODO : case insensitive
 	proto token class   { * }
 	token class:sym<IN> { $<sym> = [ :i 'in' ] } # The Internet
 	token class:sym<CH> { $<sym> = [ :i 'ch' ] } # Chaosnet
@@ -138,7 +159,7 @@ grammar DNSZone
 	# token type:sym<RT>         { <$typeName> = '' }
 	token type:sym<SOA>        { $<typeName> = [ :i 'soa' ] \h+ <rdataSOA> }
 	# token type:sym<SIG>        { <$typeName> = '' }
-	token type:sym<SPF>        { $<typeName> = [ :i 'spf' ] \h+ <rdataTXT> } #TODO defined in RFC 4408 and discontinued by RFC 7208
+	#token type:sym<SPF>        { $<typeName> = [ :i 'spf' ] \h+ <rdataTXT> } #TODO defined in RFC 4408 and discontinued by RFC 7208
 	token type:sym<SRV>        { $<typeName> = [ :i 'srv' ] <rrSpace>+ <rdataSRV> }
 	# token type:sym<SSHFP>      { <$typeName> = '' }
 	token type:sym<TXT>        { $<typeName> = [ :i 'txt' ] <rrSpace>+ <rdataTXT> }
@@ -147,6 +168,7 @@ grammar DNSZone
 
 	# Resource Record data
 	# depends on TYPE
+	# TODO simplify : directly use IPv[46] in type tokens
 	token rdataA {<ipv4>}
 	token rdataAAAA {<ipv6>}
 
@@ -261,6 +283,7 @@ grammar DNSZone
 		\d+ <?{ $/ < 256 }> # or $/ < 2 ** 8
 	}
 
+	# int 16 bits
 	token d16 {
 		\d+ <?{ $/ < 65536 }> # or $/ < 2 ** 16
 	}

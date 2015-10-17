@@ -7,6 +7,7 @@
 	- first step: syntax parsing and AST building ;
 	- second step: semantic checks (domain name validity, TTL validity, etc.).
 - How to make an "abstract" class (for ResourceRecord, to force childs to implements all methods)
+- ttl in year ?
 
 # Grammar:
 - multiline entries have problems with parentheses count
@@ -23,7 +24,11 @@
 - a valid line after a "comment line" can be invalid
 - control entries ($ttl, $origin) (are case insensitive)
 	- using :i 'ttl' for example, works, but I need to get the corresponding value
+- this is valid :
+"( ;comment
+hostname in a <ip>)"
 
+- a comment can begin after a white space (eg; " ;comment")
 # Grammar action:
 - for null values, get previous one (domain_name, ttl, class, …)
 - check that soa name server is defined above

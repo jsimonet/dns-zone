@@ -126,7 +126,6 @@ class DNSZoneAction
 
 	method type:sym<SOA>($/)
 	{
-		# say "in soa maker";
 		make Type.new( type  => $<typeName>.Str,
 		               rdata => ResourceRecordDataSOA.new(
 		                        domainName   => $<rdataSOA>.<domainName>.Str,
