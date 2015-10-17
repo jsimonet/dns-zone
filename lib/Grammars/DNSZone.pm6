@@ -33,10 +33,20 @@ grammar DNSZone {
 	my $origin = '';
 
 
-	token line {
-		^^ <resourceRecord> \h* <commentWithoutNewline>? \v* <?{ $parenCount == 0; }> |
-		<controlEntry> \v* |
-		<commentWithoutNewline> \v*
+	# Entry point
+	token TOP { [ <entry> \v+ ]+ { $parenCount = 0; } }
+
+	# A DNS zone file is composed of entries
+	# If no '(' at the start of the line, no space before resourceRecord.
+	token entry {
+		[ <paren> <rrSpace>* ]?
+		[
+			<resourceRecord> \h* <commentWithoutNewline>? |
+			<controlEntry>                                |
+			<commentWithoutNewline>
+		]?
+		[ <rrSpace> <commentWithoutNewline>? ]*
+		<?{ $parenCount == 0 }>
 	}
 
 	# COMMENTS
@@ -298,13 +308,24 @@ grammar DNSZone {
 		<:hexdigit> ** 1..4
 	}
 
-	# RRSPACE
+	# A resource record space (more or less)
 	# Can be a classic space, or a ( or )
 	# for \n space, at least one ( have to be matched
+	# It can contains a comment wich have to be inside a () sequence
 	token rrSpace {
-		\h                         |
-		\n <?{ $parenCount > 0; }> |
-		<paren>
+		[
+			\h          |
+			<rrNewLine> |
+			<paren>
+		]+
+		[ <commentWithoutNewline> <rrNewLine> ]?
+	}
+
+	# A resource record specific new line
+	# Match only if $parenCount is positive, in other words,
+	# if we are currently in a multi-line sequence
+	token rrNewLine {
+		\n <?{ $parenCount > 0; }>
 	}
 
 	# PAREN

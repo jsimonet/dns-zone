@@ -20,14 +20,14 @@ class DNSZoneAction
 	{
 		# Add to the Zone object only ResourceRecord entries
 		make Zone.new(
-			rr => grep( { $_.ast ~~ ResourceRecord }, @<line> )».ast
+			rr => grep( { $_.ast ~~ ResourceRecord }, @<entry> )».ast
 		);
 		# $<soa>.elems == 1
 		# $<NS>.elems > 0
 		# Check for errors
 	}
 
-	method line($/)
+	method entry($/)
 	{
 		if $<resourceRecord>
 		{
@@ -139,14 +139,4 @@ class DNSZoneAction
 		             );
 	}
 
-	method rrSpace($/)
-	{
-		# say 'is a paren' if /\(|\)/;
-		my $tt = $/.Str;
-		given ( $/.Str )
-		{
-			$parenCount++ when '(';
-			$parenCount-- when ')';
-		}
-	}
 }
