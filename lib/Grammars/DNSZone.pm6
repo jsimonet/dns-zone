@@ -14,7 +14,6 @@ grammar DNSZone
 	my $currentTTL;
 
 	token TOP { [ <line> ]+ { $parenCount = 0; } }
-	# rule TOP { [<line> ]+ }
 
 	token line {
 		^^ <resourceRecord> \h* <commentWithoutNewline>? \v* <?{ $parenCount == 0; }> |
@@ -130,14 +129,14 @@ grammar DNSZone
 	# token type:sym<RT>         { <$typeName> = '' }
 	token type:sym<SOA>        { $<typeName> = [ :i 'soa' ] \h+ <rdataSOA> }
 	# token type:sym<SIG>        { <$typeName> = '' }
-	token type:sym<SPF>        { $<typeName> = [ :i 'spf' ] ' test' }
+	token type:sym<SPF>        { $<typeName> = [ :i 'spf' ] \h+ <rdataTXT> } #TODO defined in RFC 4408 and discontinued by RFC 7208
 	token type:sym<SRV>        { $<typeName> = [ :i 'srv' ] <rrSpace>+ <rdataSRV> }
 	# token type:sym<SSHFP>      { <$typeName> = '' }
 	token type:sym<TXT>        { $<typeName> = [ :i 'txt' ] <rrSpace>+ <rdataTXT> }
 	# token type:sym<WKS>        { <$typeName> = '' }
 	# token type:sym<X25>        { <$typeName> = '' }
 
-	# RDATA
+	# Resource Record data
 	# depends on TYPE
 	token rdataA {<ipv4>}
 	token rdataAAAA {<ipv6>}
@@ -160,30 +159,15 @@ grammar DNSZone
 	# Need to test sequencely <h16> part because some <d8> can be interpreted as <h16> tokens, like
 	# 1000::10.0.0.1 The "10" is interpreted as <h16> and <ipv6> token fails.
 	token ipv6 {
-		<doubleColon> <ipv4>
-		|
+		<doubleColon> <ipv4> |
 		[
-			<h16> ** 1 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4>
-			|
-			<h16> ** 2 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4>
-			|
-			<h16> ** 3 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4>
-			|
-			<h16> ** 4 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4>
-			|
-			<h16> ** 5 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4>
-			|
-			<h16> ** 6 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4>
-				# <?{
-				# 	($<doubleColon>.elems == 0 && $<h16>.elems == 6)
-				# 	|| ( $<doubleColon>.elems == 1 && $<h16>.elems < 6 )
-				# }>
-			|
+			<h16> ** 1 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |
+			<h16> ** 2 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |
+			<h16> ** 3 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |
+			<h16> ** 4 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |
+			<h16> ** 5 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |
+			<h16> ** 6 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |
 			<doubleColon>? <h16> ** 0..8 % [ ':' | <doubleColon> ]
-				# <?{
-				# 	($<doubleColon>.elems == 0 && $<h16>.elems == 8)
-				# 	|| ($<doubleColon>.elems == 1 && $<h16>.elems < 8)
-				# }>
 		]
 		<?{
 			(
@@ -208,8 +192,7 @@ grammar DNSZone
 		'::'
 	}
 
-
-	# MX
+	# MX preference
 	token mxPref {
 		\d ** 1..2
 	}
@@ -221,7 +204,6 @@ grammar DNSZone
 		<rrSpace>* <rdataSOARefresh> <rrSpace>* <comment>?
 		<rrSpace>* <rdataSOARetry>   <rrSpace>* <comment>?
 		<rrSpace>* <rdataSOAExpire>  <rrSpace>* <comment>?
-		# <rdataSOAMin>    [<rrSpace>* <comment>? <rrSpace>* ]*
 		<rrSpace>* <rdataSOAMin> <rrSpace>* <commentWithoutNewline>*
 
 		{
