@@ -39,12 +39,21 @@ grammar DNSZone
 	#token controlEntryAction:sym<INCLUDE> { [:i 'include'] \h+ <fileName>   }
 
 	# Resource record
-	# A domainName is needed, even if it is empty. In this case, the line have to begin
-	# with a space.
+	# If a domain name is matched, the current domain name will be updated.
+	# A domain name can be empty only in resource record. In this case, the line
+	# have to begin with a space, and the current domain name will be used.
 	token resourceRecord {
-		[ <domainName> | '' ] <rrSpace>+ <ttlOrClass> <type> <rrSpace>*
-		{ $currentDomainName = $<domainName>.Str if $<domainName>; }
-		<?{ $currentTTL && $currentDomainName; }>
+		[ <domainName> | $<domainName> = '' ] <rrSpace>+ <ttlOrClass> <type> <rrSpace>*
+
+		# Save current domain name if it is specified
+		{ $currentDomainName = $<domainName>.Str if $<domainName>.chars; }
+
+		# Fail if grammar match an _ and the type is not SRV
+		<!{ ($<domainName>.index( '_' )).defined &&
+			$<type>.ast.type !~~ /:i SRV/ }>
+
+		# Current TTL and current domain name have to be defined
+		<?{ $currentTTL && $currentDomainName }>
 	}
 
 	# DOMAIN NAME
@@ -235,9 +244,25 @@ grammar DNSZone
 		'"' [ <-[ \n " ]> | "\\\n" | '\"' ]* '"'
 	}
 
+	token rdataSRV {
+		<rdataSRVPriority> <rrSpace>
+		<rdataSRVWeight>   <rrSpace>
+		<rdataSRVPort>     <rrSpace>
+		<rdataSRVTarget>
+	}
+
+	token rdataSRVPriority { <d16>        }
+	token rdataSRVWeight   { <d16>        }
+	token rdataSRVPort     { <d16>        }
+	token rdataSRVTarget   { <domainName> }
+
 	# int 8 bits
 	token d8 {
 		\d+ <?{ $/ < 256 }> # or $/ < 2 ** 8
+	}
+
+	token d16 {
+		\d+ <?{ $/ < 65536 }> # or $/ < 2 ** 16
 	}
 
 	# int 32 bits

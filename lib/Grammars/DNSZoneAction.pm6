@@ -9,6 +9,7 @@ use ResourceRecordDataNS;
 use ResourceRecordDataSOA;
 use ResourceRecordDataPTR;
 use ResourceRecordDataTXT;
+use ResourceRecordDataSRV;
 use Zone;
 use Type;
 
@@ -149,6 +150,18 @@ class DNSZoneAction
 		make Type.new( type => $<typeName>.Str,
 		               rdata => ResourceRecordDataTXT.new(
 		                        txt => $<rdataTXT>.Str ) );
+	}
+
+	method type:sym<SRV>($/)
+	{
+		make Type.new( type => $<typeName>.Str,
+		               rdata => ResourceRecordDataSRV.new(
+		                        priority => $<rdataSRV>.<rdataSRVPriority>.Int,
+		                        weight   => $<rdataSRV>.<rdataSRVWeight>.Int,
+		                        port     => $<rdataSRV>.<rdataSRVPort>.Int,
+		                        target   => $<rdataSRV>.<rdataSRVTarget>.Str
+		                        )
+		             );
 	}
 
 	method rrSpace($/)
