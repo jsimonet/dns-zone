@@ -1,8 +1,7 @@
 # General:
 - (re)construct a file zone based on lib/Zone.pm6 object ;
 	- use Match objects if ResourceRecord is not modified ;
-	- a comment or a $[ttl|origin] are not of ResourceRecord, so .gen does not exists ;
-- include some bind 9 directive ? ($INCLUDE, $TTL, $GENERATED, etc.)
+- include some bind 9 directive ? ($INCLUDE, $TTL, $GENERATED, etc.) [$ttl, $origin ok]
 - Two steps:
 	- first step: syntax parsing and AST building ;
 	- second step: semantic checks (domain name validity, TTL validity, etc.).
@@ -11,30 +10,19 @@
 # Grammar:
 - multiline entries have problems with parentheses count
 	- an <rrSpace> rule shoud only increment or decrement the count if rule
-		is valid ;
+		is valid ; => Nope, just enter rrSpace rule only if needed
 	- the count should be valid any time, because we need it for \n validity ;
-- class names have to be insensitive (cname, CNAME, cName, etc.) ;
 - special IPv4, like 0.0.0.0 ?
-- empty lines
 - error exception:
 	- get line, reason, enventually continue the parsing of the other lines ;
 	- named-checkzone force ttl to 0 if value > signed int32)
 - test with windows carriage return ;
-- read user defined variable ($ttl)
-- a valid line after a "comment line" can be invalid
-- control entries ($ttl, $origin) (are case insensitive)
-	- using :i 'ttl' for example, works, but I need to get the corresponding value
-- this is valid :
-"( ;comment
-hostname in a <ip>)"
 
-- a comment can begin after a white space (eg; " ;comment")
 # Grammar action:
+- should just create AST objects, no parsing or validation at all
 - for null values, get previous one (domain_name, ttl, class, …)
 - check that soa name server is defined above
-- unicode domain name to transcode to ASCII
-- when parsing an empty domain name, there is some problems when creating the corresponding AST
-
+- unicode domain name <= transcode => ASCII
 
 # To check:
 - In IPv6 rule : $<ipv4>.elems returns 0, $<ipv4><d8> returns 4, is it normal that $<ipv4>.elems returns 0 ?
