@@ -17,12 +17,13 @@ test-ttl                   400     A       127.0.0.1
 test-ttlclass      400     IN      A       127.0.0.1
 test-ttlclass-rev  IN      400     A       127.0.0.1
 
-ttl1 1  a 1.0.0.1
-ttl2 2w a 1.0.0.2
-ttl3 3d a 1.0.0.3
-ttl4 4h a 1.0.0.4
-ttl5 5m a 1.0.0.5
-ttl6 6s a 1.0.0.6
+; These are max values for a TTL
+ttl1 in 2147483647   a 10.0.0.1
+ttl2 in 2147483647s  a 10.0.0.2
+ttl3 in 35791394m    a 10.0.0.3
+ttl4 in 596523h      a 10.0.0.4
+ttl5 in 24855d       a 10.0.0.5
+ttl6 in 3550w        a 10.0.0.6
 
 ; some parentheses valid lines
 ()

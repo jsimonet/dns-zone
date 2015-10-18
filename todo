@@ -7,7 +7,6 @@
 	- first step: syntax parsing and AST building ;
 	- second step: semantic checks (domain name validity, TTL validity, etc.).
 - How to make an "abstract" class (for ResourceRecord, to force childs to implements all methods)
-- ttl in year ?
 
 # Grammar:
 - multiline entries have problems with parentheses count
@@ -19,6 +18,7 @@
 - empty lines
 - error exception:
 	- get line, reason, enventually continue the parsing of the other lines ;
+	- named-checkzone force ttl to 0 if value > signed int32)
 - test with windows carriage return ;
 - read user defined variable ($ttl)
 - a valid line after a "comment line" can be invalid
