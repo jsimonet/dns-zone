@@ -122,10 +122,18 @@ grammar DNSZone {
 	}
 
 	# TTL, can be:
-	# 42 1s 2m 3h 4j 5w 6y
-	# TODO check that ttl value is an d32
+	# 42 1s 2m 3h 4j 5w
 	token ttl {
-		<[0..9]>+ <[smhdwy]>?
+		(<[0..9]>+) (<[smhdw]>?)
+		<?{
+			# Checks if the final value is inferior to an int32
+			$1 ~~ 'w' && ($0 * 604800 < 4294967296) ||
+			$1 ~~ 'd' && ($0 * 86400  < 4294967296) ||
+			$1 ~~ 'h' && ($0 * 3600   < 4294967296) ||
+			$1 ~~ 'm' && ($0 * 60     < 4294967296) ||
+			$1 ~~ 's' && ($0          < 4294967296) ||
+			$1 ~~ ''  && ($0          < 4294967296)
+		}>
 	}
 
 	# CLASS
