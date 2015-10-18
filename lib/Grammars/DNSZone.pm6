@@ -177,7 +177,7 @@ grammar DNSZone {
 	# token type:sym<RT>         { <$typeName> = '' }
 	token type:sym<SOA>        { $<typeName> = [ :i 'soa' ] \h+ <rdataSOA> }
 	# token type:sym<SIG>        { <$typeName> = '' }
-	#token type:sym<SPF>        { $<typeName> = [ :i 'spf' ] \h+ <rdataTXT> } #TODO defined in RFC 4408 and discontinued by RFC 7208
+	token type:sym<SPF>        { $<typeName> = [ :i 'spf' ] \h+ <rdataTXT> } #TODO defined in RFC 4408 and discontinued by RFC 7208
 	token type:sym<SRV>        { $<typeName> = [ :i 'srv' ] <rrSpace>+ <rdataSRV> }
 	# token type:sym<SSHFP>      { <$typeName> = '' }
 	token type:sym<TXT>        { $<typeName> = [ :i 'txt' ] <rrSpace>+ <rdataTXT> }

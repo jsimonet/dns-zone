@@ -67,6 +67,9 @@ qw4       TXT "bo uh" hou'
 qwml      txt "bouh" ahhhhhhhh !
 pw1       txt "a()b"
 
+; SPF entry (like TXT)
+example.com. IN SPF "v=spf1 +mx a:colo.example.com/28 -all"
+
 ; NS records
 @                               ns        ns1
 ns1                             A       127.0.0.1

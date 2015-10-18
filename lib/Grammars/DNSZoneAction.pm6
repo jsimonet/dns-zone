@@ -10,9 +10,16 @@ use ResourceRecordDataSOA;
 use ResourceRecordDataPTR;
 use ResourceRecordDataTXT;
 use ResourceRecordDataSRV;
+use ResourceRecordDataSPF;
 use Zone;
 use Type;
 
+=begin pod
+=head1 Synopsis
+=para
+	The action of the grammar DNSZone. This class aims to create a comprensible AST,
+	giving possibility to manipulate it easily (add/remove/alter some lines).
+=end pod
 class DNSZoneAction
 {
 
@@ -137,6 +144,13 @@ class DNSZoneAction
 		                        target   => $<rdataSRV>.<rdataSRVTarget>.Str
 		                        )
 		             );
+	}
+
+	method type:sym<SPF>($/)
+	{
+		make Type.new( type => $<typeName>.Str,
+		               rdata => ResourceRecordDataSPF.new(
+		                        spf => $<rdataTXT>.Str ) );
 	}
 
 }
