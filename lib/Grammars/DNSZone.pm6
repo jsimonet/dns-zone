@@ -148,38 +148,51 @@ grammar DNSZone {
 	token type:sym<AAAA>       { $<typeName> = [ :i 'aaaa' ] <rrSpace>+ <rdataAAAA> }
 	# token type:sym<AFSDB>      { <$typeName> = '' }
 	# token type:sym<APL>        { <$typeName> = '' }
-	token type:sym<A6>         { $<typeName> = [ :i 'a6' ] <rrSpace>+ <rdataAAAA> }
+	# token type:sym<AXFR>       { <$typeName> = '' }
+	token type:sym<A6>         { $<typeName> = [ :i 'a6' ] <rrSpace>+ <rdataAAAA> } # deprecated ?
+	# token type:sym<CAA>        { $<typeName> = [ :i 'caa' ] }
+	# token type:sym<CDNSKEY>    { $<typeName> = [ :i 'cdnskey' ] }
+	# token type:sym<CDS>        { $<typeName> = [ :i 'cds' ] }
 	# token type:sym<CERT>       { <$typeName> = '' }
 	token type:sym<CNAME>      { $<typeName> = [ :i 'cname' ] <rrSpace>+ <domainName> }
 	# token type:sym<DHCID>      { <$typeName> = '' }
+	# token type:sym<DLV>        { <$typeName> = '' }
 	# token type:sym<DNAME>      { <$typeName> = '' }
 	# token type:sym<DNSKEY>     { <$typeName> = '' }
 	# token type:sym<DS>         { <$typeName> = '' }
-	# token type:sym<GPOS>       { <$typeName> = '' }
-	# token type:sym<HINFO>      { <$typeName> = '' }
 	# token type:sym<IPSECKEY>   { <$typeName> = '' }
-	# token type:sym<ISDN>       { <$typeName> = '' }
+	# token type:sym<IXFR>       { <$typeName> = '' }
+	# token type:sym<GPOS>       { <$typeName> = '' } # deprecated ?
+	# token type:sym<HINFO>      { <$typeName> = '' } # deprecated ?
+	# token type:sym<HIP>        { <$typeName> = '' }
+	# token type:sym<IPSECKEY>   { <$typeName> = '' }
+	# token type:sym<ISDN>       { <$typeName> = '' } # deprecated ?
 	# token type:sym<KEY>        { <$typeName> = '' }
 	# token type:sym<KX>         { <$typeName> = '' }
 	# token type:sym<LOC>        { <$typeName> = '' }
 	token type:sym<MX>         { $<typeName> = [ :i 'mx' ] \h+ <mxPref> \h+ <domainName> }
 	# token type:sym<NAPTR>      { <$typeName> = '' }
+	# token type:sym<OPT>        { <$typeName> = '' }
 	token type:sym<NS>         { $<typeName> = [ :i 'ns' ] \h+ <domainName> }
-	# token type:sym<NSAP>       { <$typeName> = '' }
+	# token type:sym<NSAP>       { <$typeName> = '' } # deprecated ?
 	# token type:sym<NSEC>       { <$typeName> = '' }
 	# token type:sym<NSEC3>      { <$typeName> = '' }
 	# token type:sym<NSEC3PARAM> { <$typeName> = '' }
-	# token type:sym<NXT>        { <$typeName> = '' }
+	# token type:sym<NXT>        { <$typeName> = '' } # deprecated ?
 	token type:sym<PTR>        { $<typeName> = [ :i 'ptr' ] <rrSpace>+ <domainName> }
-	# token type:sym<PX>         { <$typeName> = '' }
+	# token type:sym<PX>         { <$typeName> = '' } # deprecated ?
 	# token type:sym<RP>         { <$typeName> = '' }
 	# token type:sym<RRSIG>      { <$typeName> = '' }
-	# token type:sym<RT>         { <$typeName> = '' }
-	token type:sym<SOA>        { $<typeName> = [ :i 'soa' ] \h+ <rdataSOA> }
+	# token type:sym<RT>         { <$typeName> = '' } # deprecated ?
 	# token type:sym<SIG>        { <$typeName> = '' }
+	token type:sym<SOA>        { $<typeName> = [ :i 'soa' ] \h+ <rdataSOA> }
 	token type:sym<SPF>        { $<typeName> = [ :i 'spf' ] \h+ <rdataTXT> } #TODO defined in RFC 4408 and discontinued by RFC 7208
 	token type:sym<SRV>        { $<typeName> = [ :i 'srv' ] <rrSpace>+ <rdataSRV> }
 	# token type:sym<SSHFP>      { <$typeName> = '' }
+	# token type:sym<TA>         { <$typeName> = '' }
+	# token type:sym<TKEY>       { <$typeName> = '' }
+	# token type:sym<TLSA>       { <$typeName> = '' }
+	# token type:sym<TSIG>       { <$typeName> = '' }
 	token type:sym<TXT>        { $<typeName> = [ :i 'txt' ] <rrSpace>+ <rdataTXT> }
 	# token type:sym<WKS>        { <$typeName> = '' }
 	# token type:sym<X25>        { <$typeName> = '' }
@@ -210,8 +223,8 @@ grammar DNSZone {
 	token ipv6 {
 		<doubleColon> <ipv4> |
 		[
-			<h16> ** 1 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |
-			<h16> ** 2 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |
+			<h16>                                        <doubleColon>   <ipv4> |
+			<h16> ** 2 %         <doubleColon>   [ ':' | <doubleColon> ] <ipv4> |
 			<h16> ** 3 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |
 			<h16> ** 4 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |
 			<h16> ** 5 % [ ':' | <doubleColon> ] [ ':' | <doubleColon> ] <ipv4> |

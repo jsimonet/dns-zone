@@ -12,7 +12,7 @@
 	- an <rrSpace> rule shoud only increment or decrement the count if rule
 		is valid ; => Nope, just enter rrSpace rule only if needed
 	- the count should be valid any time, because we need it for \n validity ;
-- special IPv4, like 0.0.0.0 ?
+- special IPv4, like 0.0.0.0 ? => seems to be ok for named-checkzone
 - error exception:
 	- get line, reason, enventually continue the parsing of the other lines ;
 	- named-checkzone force ttl to 0 if value > signed int32)
