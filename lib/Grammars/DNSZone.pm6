@@ -157,7 +157,7 @@ grammar DNSZone {
 	token type:sym<CNAME>      { $<typeName> = [ :i 'cname' ] <rrSpace>+ <domainName> }
 	# token type:sym<DHCID>      { <$typeName> = '' }
 	# token type:sym<DLV>        { <$typeName> = '' }
-	# token type:sym<DNAME>      { <$typeName> = '' }
+	token type:sym<DNAME>      { <$typeName> = [ :i 'dname' ] <rrSpace>+ <domainName> }
 	# token type:sym<DNSKEY>     { <$typeName> = '' }
 	# token type:sym<DS>         { <$typeName> = '' }
 	# token type:sym<IPSECKEY>   { <$typeName> = '' }

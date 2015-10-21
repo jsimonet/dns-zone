@@ -5,6 +5,7 @@ use ResourceRecordDataA;
 use ResourceRecordDataAAAA;
 use ResourceRecordDataMX;
 use ResourceRecordDataCNAME;
+use ResourceRecordDataDNAME;
 use ResourceRecordDataNS;
 use ResourceRecordDataSOA;
 use ResourceRecordDataPTR;
@@ -98,6 +99,13 @@ class DNSZoneAction
 		make Type.new( type  => $<typeName>.Str,
 		               rdata => ResourceRecordDataCNAME.new(
 		                        domainName => $<domainName>.Str) );
+	}
+
+	method type:sym<DNAME>($/)
+	{
+		make Type.new( type => $<typeName>.Str,
+		               rdata => ResourceRecordDataDNAME.new(
+		                        domainName => $<domainName>.Str ) );
 	}
 
 	method type:sym<NS>($/)

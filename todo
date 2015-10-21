@@ -28,3 +28,9 @@
 - In IPv6 rule : $<ipv4>.elems returns 0, $<ipv4><d8> returns 4, is it normal that $<ipv4>.elems returns 0 ?
 - Some rules do not match if "use Grammar::Debugger" or "use Grammar::Tracer" are disabled ;
 - in lib/Zone.pm6, « splice » has an strange comportement, depending it is used in OO way, or not.
+
+# Idea to split RFC compliant from modern syntax (used in many softwares).
+role RFC5205 {
+	type:<HIP> { * }
+}
+grammar Modern does RFC5205 { }

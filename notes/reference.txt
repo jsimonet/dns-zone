@@ -27,7 +27,7 @@ RFC 4701
     type DHCID
 RFC 4431
     type DLV
-RFC 2672
+RFC 6672 (2672 is obsolete since June 2012)
     type DNAME
 RFC 4034
     type DNSKEY
