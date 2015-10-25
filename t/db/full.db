@@ -86,4 +86,8 @@ mini                            AAAA    ::1
 test-cname                      CNAME   test-a
 test-reccname                   CNAME   test-cname
 
+; DNAME
+test-dname                      DNAME   test-cname
+test-recdname                   DNAME   test-dname
+
 ; $INCLUDE db.include
