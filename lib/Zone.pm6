@@ -11,6 +11,8 @@ use ResourceRecord;
 class Zone
 {
 
+	my subset PositiveInteger of Int where * >= 0;
+
 	has ResourceRecord @.rr is rw;
 
 	method gist()
@@ -28,16 +30,40 @@ class Zone
 		return .Str for @.rr;
 	}
 
-	method addResourceRecord( ResourceRecord :$rr, Int :$position=-1 )
+	multi method add() { * }
+	multi method add( ResourceRecord :$rr!, PositiveInteger :$position! )
 	{
-		if 0 <= $position <= @.rr.elems
+		if $position < @.rr.elems
 		{
-			@.rr.splice( $position-1, 0, $rr );
+			@.rr.splice( $position, 0, $rr );
 			# @.rr = splice( @.rr, $position-1, 0, $rr ); # Do not work ?
 		}
-		else
+	}
+
+	multi method add( ResourceRecord :$rr! )
+	{
+		say "in second";
+		push @.rr, $rr;
+	}
+
+	multi method add( ResourceRecord :@rrs!, PositiveInteger :$position! )
+	{
+		if $position < @.rr.elems
 		{
-			push @.rr, $rr;
+			@.rr.splice( $position, 0, @rrs );
+		}
+	}
+
+	multi method add( ResourceRecord :@rrs! )
+	{
+		push @.rr, $_ for @rrs;
+	}
+
+	method del( PositiveInteger :$position! )
+	{
+		if $position <= @.rr.elems
+		{
+			@.rr.splice( $position-1, 1 );
 		}
 	}
 
