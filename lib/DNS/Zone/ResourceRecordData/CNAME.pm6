@@ -2,7 +2,7 @@ use v6;
 
 use DNS::Zone::ResourceRecordData::ResourceRecordData;
 
-class ResourceRecordDataDNAME is ResourceRecordData
+class CNAME is ResourceRecordData
 {
 	has Str $.domainName is rw;
 

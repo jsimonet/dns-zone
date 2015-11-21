@@ -2,7 +2,7 @@ use v6;
 
 use DNS::Zone::ResourceRecordData::ResourceRecordData;
 
-class ResourceRecordDataSPF is ResourceRecordData
+class SPF is ResourceRecordData
 {
     has Str $.spf is rw;
 

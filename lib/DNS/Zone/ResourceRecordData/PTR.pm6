@@ -2,7 +2,7 @@ use v6;
 
 use DNS::Zone::ResourceRecordData::ResourceRecordData;
 
-class ResourceRecordDataCNAME is ResourceRecordData
+class PTR is ResourceRecordData
 {
 	has Str $.domainName is rw;
 
@@ -13,5 +13,5 @@ class ResourceRecordDataCNAME is ResourceRecordData
 	{ return $.domainName; }
 
 	method gen()
-	{ return $.domainName; }
+	{ return "$.domainName"; }
 }

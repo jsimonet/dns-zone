@@ -2,7 +2,7 @@ use v6;
 
 use DNS::Zone::ResourceRecordData::ResourceRecordData;
 
-class ResourceRecordDataAAAA is ResourceRecordData
+class AAAA is ResourceRecordData
 {
 	has Str $.ip6Adress is rw;
 

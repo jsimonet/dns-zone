@@ -2,17 +2,17 @@ use v6;
 
 use DNS::Zone::ResourceRecord;
 use DNS::Zone::ResourceRecordData::ResourceRecordData;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataA;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataAAAA;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataMX;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataCNAME;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataDNAME;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataNS;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataSOA;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataPTR;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataTXT;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataSRV;
-use DNS::Zone::ResourceRecordData::ResourceRecordDataSPF;
+use DNS::Zone::ResourceRecordData::A;
+use DNS::Zone::ResourceRecordData::AAAA;
+use DNS::Zone::ResourceRecordData::MX;
+use DNS::Zone::ResourceRecordData::CNAME;
+use DNS::Zone::ResourceRecordData::DNAME;
+use DNS::Zone::ResourceRecordData::NS;
+use DNS::Zone::ResourceRecordData::SOA;
+use DNS::Zone::ResourceRecordData::PTR;
+use DNS::Zone::ResourceRecordData::TXT;
+use DNS::Zone::ResourceRecordData::SRV;
+use DNS::Zone::ResourceRecordData::SPF;
 
 =begin pod
 =head1 Synopsis
@@ -86,19 +86,19 @@ class ModernActions
 	method type:sym<A>($/)
 	{
 		make Type.new( type  => $<typeName>.Str,
-		               rdata => ResourceRecordDataA.new(ipAdress => $<rdataA>.Str) );
+		               rdata => A.new(ipAdress => $<rdataA>.Str) );
 	}
 
 	method type:sym<AAAA>($/)
 	{
 		make Type.new( type  => $<typeName>.Str,
-		               rdata => ResourceRecordDataAAAA.new(ip6Adress => $<rdataAAAA>.Str) );
+		               rdata => AAAA.new(ip6Adress => $<rdataAAAA>.Str) );
 	}
 
 	method type:sym<MX>($/)
 	{
 		make Type.new( type  => $<typeName>.Str,
-		               rdata => ResourceRecordDataMX.new(
+		               rdata => MX.new(
 		                        mxPref     => $<mxPref>,
 		                        domainName => $<domainName>.Str) );
 	}
@@ -106,28 +106,28 @@ class ModernActions
 	method type:sym<CNAME>($/)
 	{
 		make Type.new( type  => $<typeName>.Str,
-		               rdata => ResourceRecordDataCNAME.new(
+		               rdata => CNAME.new(
 		                        domainName => $<domainName>.Str) );
 	}
 
 	method type:sym<DNAME>($/)
 	{
 		make Type.new( type => $<typeName>.Str,
-		               rdata => ResourceRecordDataDNAME.new(
+		               rdata => DNAME.new(
 		                        domainName => $<domainName>.Str ) );
 	}
 
 	method type:sym<NS>($/)
 	{
 		make Type.new( type  => $<typeName>.Str,
-		               rdata => ResourceRecordDataNS.new(
+		               rdata => NS.new(
 		                        domainName => $<domainName>.Str) );
 	}
 
 	method type:sym<SOA>($/)
 	{
 		make Type.new( type  => $<typeName>.Str,
-		               rdata => ResourceRecordDataSOA.new(
+		               rdata => SOA.new(
 		                        domainName   => $<rdataSOA>.<domainName>.Str,
 		                        domainAction => $<rdataSOA>.<rdataSOAActionDomain>.Str,
 		                        serial       => $<rdataSOA>.<rdataSOASerial>.Str,
@@ -140,21 +140,21 @@ class ModernActions
 	method type:sym<PTR>($/)
 	{
 		make Type.new( type => $<typeName>.Str,
-		               rdata => ResourceRecordDataPTR.new(
+		               rdata => PTR.new(
 		                        domainName => $<domainName>.Str) );
 	}
 
 	method type:sym<TXT>($/)
 	{
 		make Type.new( type => $<typeName>.Str,
-		               rdata => ResourceRecordDataTXT.new(
+		               rdata => TXT.new(
 		                        txt => $<rdataTXT>.Str ) );
 	}
 
 	method type:sym<SRV>($/)
 	{
 		make Type.new( type => $<typeName>.Str,
-		               rdata => ResourceRecordDataSRV.new(
+		               rdata => SRV.new(
 		                        priority => $<rdataSRV>.<rdataSRVPriority>.Int,
 		                        weight   => $<rdataSRV>.<rdataSRVWeight>.Int,
 		                        port     => $<rdataSRV>.<rdataSRVPort>.Int,
@@ -166,7 +166,7 @@ class ModernActions
 	method type:sym<SPF>($/)
 	{
 		make Type.new( type => $<typeName>.Str,
-		               rdata => ResourceRecordDataSPF.new(
+		               rdata => SPF.new(
 		                        spf => $<rdataTXT>.Str ) );
 	}
 

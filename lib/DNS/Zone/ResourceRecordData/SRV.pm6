@@ -2,7 +2,7 @@ use v6;
 
 use DNS::Zone::ResourceRecordData::ResourceRecordData;
 
-class ResourceRecordDataSRV is ResourceRecordData
+class SRV is ResourceRecordData
 {
 	has Int $.priority is rw;
 	has Int $.weight   is rw;

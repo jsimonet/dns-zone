@@ -46,11 +46,11 @@ sub MAIN(Str :$testFile!)
 
 		my $zone = Zone.new;
 		$zone.load( :$data );
-		my $rdata = ResourceRecordDataA.new( ipAdress => '10.0.0.2' );
+		my $rdata = A.new( ipAdress => '10.0.0.2' );
 		my $rr = ResourceRecord.new(
 				domainName=> 'second',
-				type => 'A',
 				rdata => $rdata);
+		#say $rr.type;
 		$zone.add( :$rr, position => 2 );
 		say $zone.gen;
 	}

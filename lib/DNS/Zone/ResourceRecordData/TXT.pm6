@@ -2,7 +2,7 @@ use v6;
 
 use DNS::Zone::ResourceRecordData::ResourceRecordData;
 
-class ResourceRecordDataTXT is ResourceRecordData
+class TXT is ResourceRecordData
 {
 	has Str $.txt is rw;
 
