@@ -4,11 +4,12 @@ use v6;
 use Grammar::Tracer;
 
 =begin pod
-=synopsis Grammar to parse a dns zone file, RFC 1035 compliant.
+=synopsis Grammar to parse a dns zone file, including RFC 1035.
 =author Julien Simonet
 =version 0.1
 =end pod
-grammar DNSZone {
+grammar Modern {
+
 	# Used to count opened parentheses.
 	my $parenCount = 0;
 
@@ -47,7 +48,11 @@ grammar DNSZone {
 		]?
 		[ <rrSpace> <commentWithoutNewline>? ]*
 		<?{ $parenCount == 0 }>
+		#<error> \v*
 	}
+
+	# An error occured, try to continue parsing
+	#token error { \N+ }
 
 	# COMMENTS
 	token commentWithoutNewline { ';' \N*     } # ;comment

@@ -1,6 +1,6 @@
 use v6;
 
-use ResourceRecordData;
+use DNS::Zone::ResourceRecordData::ResourceRecordData;
 
 class ResourceRecordDataSOA is ResourceRecordData
 {

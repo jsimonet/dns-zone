@@ -1,6 +1,8 @@
 use v6;
 
-use ResourceRecord;
+use DNS::Zone::ResourceRecord;
+use DNS::Zone::Grammars::Modern;
+use DNS::Zone::Grammars::ModernActions;
 
 =begin pod
 =head1 Zone class.
@@ -72,5 +74,20 @@ class Zone
 		my $res = join "\n", map { .gen() }, @.rr;
 
 		return $res;
+	}
+
+	method load( Str :$data! )
+	{
+		my $actions = ModernActions.new;
+		my $parsed = Modern.parse( $data, :$actions );
+		if $parsed
+		{
+			@!rr = $parsed.ast;
+		}
+		else
+		{
+			say "not parsed!";
+			# Throw an error
+		}
 	}
 }

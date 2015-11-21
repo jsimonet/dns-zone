@@ -1,19 +1,18 @@
 use v6;
 
-use ResourceRecord;
-use ResourceRecordDataA;
-use ResourceRecordDataAAAA;
-use ResourceRecordDataMX;
-use ResourceRecordDataCNAME;
-use ResourceRecordDataDNAME;
-use ResourceRecordDataNS;
-use ResourceRecordDataSOA;
-use ResourceRecordDataPTR;
-use ResourceRecordDataTXT;
-use ResourceRecordDataSRV;
-use ResourceRecordDataSPF;
-use Zone;
-use Type;
+use DNS::Zone::ResourceRecord;
+use DNS::Zone::ResourceRecordData::ResourceRecordData;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataA;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataAAAA;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataMX;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataCNAME;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataDNAME;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataNS;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataSOA;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataPTR;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataTXT;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataSRV;
+use DNS::Zone::ResourceRecordData::ResourceRecordDataSPF;
 
 =begin pod
 =head1 Synopsis
@@ -21,15 +20,25 @@ use Type;
 	The action of the grammar DNSZone. This class aims to create a comprensible AST,
 	giving possibility to manipulate it easily (add/remove/alter some lines).
 =end pod
-class DNSZoneAction
+class ModernActions
 {
 
+	# Used for creating the AST, does not export from this file.
+	my class Type
+	{
+		has Str                $.type is rw;
+		has ResourceRecordData $.rdata is rw;
+	}
+
+	# Return a hash of ResourceRecords.
 	method TOP($/)
 	{
 		# Add to the Zone object only ResourceRecord entries
-		make Zone.new(
-			rr => grep( { $_.ast ~~ ResourceRecord }, @<entry> )».ast
-		);
+		#make Zone.new(
+		#	rr => grep( { $_.ast ~~ ResourceRecord }, @<entry> )».ast
+		#);
+		make grep( { $_.ast ~~ ResourceRecord }, @<entry> )».ast;
+
 		# $<soa>.elems == 1
 		# $<NS>.elems > 0
 		# Check for errors

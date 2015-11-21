@@ -1,8 +1,8 @@
 use v6;
 
-use ResourceRecordData;
+use DNS::Zone::ResourceRecordData::ResourceRecordData;
 
-class ResourceRecordDataDNAME is ResourceRecordData
+class ResourceRecordDataNS is ResourceRecordData
 {
 	has Str $.domainName is rw;
 
