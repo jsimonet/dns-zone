@@ -1,0 +1,12 @@
+{
+	"perl" : "6.*",
+	"name" : "DNS::Zone",
+	"version" : "0.1.0",
+	"description" : "Parses a DNS zone and returns objects to manipulate it.",
+	"author" : "Julien Simonet",
+	"provides" : {
+		"DNS::Zone" : "lib/DNS/Zone.pm6"
+	},
+	"depends" : [ "Grammar::Tracer" ],
+	"source-url" : "git@github.com:jsimonet/dns-zone.git"
+}
