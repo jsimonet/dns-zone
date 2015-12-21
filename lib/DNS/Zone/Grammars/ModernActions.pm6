@@ -89,11 +89,11 @@ class DNS::Zone::ModernActions
 		               rdata => DNS::Zone::ResourceRecordData::A.new(ipAdress => $<rdataA>.Str) );
 	}
 
-	method type:sym<AAAA>($/)
-	{
-		make Type.new( type  => $<typeName>.Str,
-		               rdata => DNS::Zone::ResourceRecordData::AAAA.new(ip6Adress => $<rdataAAAA>.Str) );
-	}
+	#method type:sym<AAAA>($/)
+	#{
+	#	make Type.new( type  => $<typeName>.Str,
+	#	               rdata => DNS::Zone::ResourceRecordData::AAAA.new(ip6Adress => $<rdataAAAA>.Str) );
+	#}
 
 	method type:sym<MX>($/)
 	{

@@ -1,0 +1,308 @@
+use v6;
+
+use Grammar::Tracer;
+
+=begin pod
+=synopsis Grammar to parse a dns zone file, including RFC 1035.
+=author Julien Simonet
+=version 0.1
+=end pod
+grammar DNS::Zone::Grammars::rfc1035 {
+
+	# Used to count opened parentheses.
+	my $parenCount = 0;
+
+	# Used to check the domain name lengh.
+	my $maxDomainNameLengh = 254;
+
+	# Used to check the TXT data.
+	my $maxRdataTXTLengh = 255;
+
+	# Each parts of a domain name (insided '.') can have a maximum lengh.
+	my $maxLabelDomainNameLengh = 63;
+
+	# The last encountered domain name
+	my $currentDomainName;
+
+	# The last encountered ttl
+	my $currentTTL;
+
+	# TODO
+	# The origin of the zone, used to check if domains are inside the zone,
+	# and to check if NS is defined
+	my $origin = '';
+
+
+	# Entry point
+	token TOP { [ <entry> \v+ ]+ { $parenCount = 0; } }
+
+	# A DNS zone file is composed of entries
+	# If no '(' at the start of the line, no space before resourceRecord.
+	token entry {
+		[ <paren> <rrSpace>* ]?
+		[
+			<resourceRecord> \h* <commentWithoutNewline>? |
+			<controlEntry>                                |
+			<commentWithoutNewline>
+		]?
+		[ <rrSpace> <commentWithoutNewline>? ]*
+		<?{ $parenCount == 0 }>
+		#<error> \v*
+	}
+
+	# An error occured, try to continue parsing
+	#token error { \N+ }
+
+	# COMMENTS
+	token commentWithoutNewline { ';' \N*     } # ;comment
+	token comment               { ';' \N* \n? } # ;comment\n
+
+	# CONTROL ENTRIES
+	# Used to set variable values, like TTL or ORIGIN.
+	token controlEntry {
+		'$' <controlEntryAction>
+	}
+
+	proto token controlEntryAction { * }
+	token controlEntryAction:sym<TTL> {
+		[ :i 'ttl' ] \h+ <ttl>
+		{ $currentTTL = $<ttl>.Str.Numeric; }
+	}
+
+	token controlEntryAction:sym<ORIGIN>  { [ :i 'origin' ] \h+ <domainName> }
+	# TODO
+	#token controlEntryAction:sym<INCLUDE> { [:i 'include'] \h+ <fileName>   }
+
+	# Resource record
+	# If a domain name is matched, the current domain name will be updated.
+	# A domain name can be empty only in resource record. In this case, the line
+	# have to begin with a space, and the current domain name will be used.
+	token resourceRecord {
+		[ <domainName> | $<domainName> = '' ] <rrSpace>+ <ttlOrClass> <type> <rrSpace>*
+
+		# Save current domain name if it is specified
+		{ $currentDomainName = $<domainName>.Str if $<domainName>.chars; }
+
+		# Fail if grammar match an _ and the type is not SRV
+		<!{ ($<domainName>.index( '_' )).defined &&
+			$<type>.ast.type !~~ /:i SRV/ }>
+
+		# Current TTL and current domain name have to be defined
+		<?{ $currentTTL && $currentDomainName }>
+	}
+
+	# DOMAIN NAME
+	# can be any of :
+	# domain subdomain.domain domain.tld. @
+	proto token domainName { * }
+
+	token domainName:sym<fqdn> {
+		# Same as labeled but with a final dot
+		<domainNameLabel> ** { 1 .. $maxDomainNameLengh/2 }  % '.' '.'
+		<?{
+			$/.Str.chars <= $maxDomainNameLengh;
+		}>
+	}
+
+	token domainName:sym<labeled> {
+		<domainNameLabel> ** { 1 .. $maxDomainNameLengh/2 }  % '.'
+		#<?{ $/.Str.chars + 1 + $origin.chars < $maxDomainNameLengh; }>
+	}
+
+	token domainName:sym<@> { '@' }
+
+	token domainNameLabel {
+		<alnum> [ <alnum> | '-' ] ** {0 .. $maxLabelDomainNameLengh - 1}
+	}
+
+	# TTL AND CLASS
+	# <ttl> & <class> are optionals
+	# A <class> or a <ttl>, is followed by a <rrSpace>.
+	# If no class or <ttl> are matched, no <rrSpace> either so parenthese
+	# count is ok
+	token ttlOrClass {
+		[ [ <class> | <ttl> ] <rrSpace>+ ] ** 1..2 <?{ $<class>.elems <= 1 && $<ttl>.elems <= 1; }> |
+		''
+	}
+
+	# TTL, can be:
+	# 42 1s 2m 3h 4j 5w
+	token ttl {
+		(<[0..9]>+) (<[smhdw]>?)
+		<?{
+			# Checks if the final value is inferior to an signed int32
+			$1 ~~ 'w' && ($0 * 604800 <= 2147483647) ||
+			$1 ~~ 'd' && ($0 * 86400  <= 2147483647) ||
+			$1 ~~ 'h' && ($0 * 3600   <= 2147483647) ||
+			$1 ~~ 'm' && ($0 * 60     <= 2147483647) ||
+			$1 ~~ 's' && ($0          <= 2147483647) ||
+			$1 ~~ ''  && ($0          <= 2147483647)
+		}>
+	}
+
+	# CLASS
+	proto token class   { * }
+	token class:sym<IN> { $<sym> = [ :i 'in' ] } # The Internet
+	token class:sym<CH> { $<sym> = [ :i 'ch' ] } # Chaosnet
+	token class:sym<HS> { $<sym> = [ :i 'hs' ] } # Hesiod
+
+	# TYPE
+	proto token type           { * }
+	token type:sym<A>          { $<typeName> = [ :i 'a' ] <rrSpace>+ <rdataA> }
+	#token type:sym<AAAA>       { $<typeName> = [ :i 'aaaa' ] <rrSpace>+ <rdataAAAA> }
+	# token type:sym<AFSDB>      { <$typeName> = '' }
+	# token type:sym<APL>        { <$typeName> = '' }
+	# token type:sym<AXFR>       { <$typeName> = '' }
+	# token type:sym<CAA>        { $<typeName> = [ :i 'caa' ] }
+	# token type:sym<CDNSKEY>    { $<typeName> = [ :i 'cdnskey' ] }
+	# token type:sym<CDS>        { $<typeName> = [ :i 'cds' ] }
+	# token type:sym<CERT>       { <$typeName> = '' }
+	token type:sym<CNAME>      { $<typeName> = [ :i 'cname' ] <rrSpace>+ <domainName> }
+	# token type:sym<DHCID>      { <$typeName> = '' }
+	# token type:sym<DLV>        { <$typeName> = '' }
+	token type:sym<DNAME>      { $<typeName> = [ :i 'dname' ] <rrSpace>+ <domainName> }
+	# token type:sym<DNSKEY>     { <$typeName> = '' }
+	# token type:sym<DS>         { <$typeName> = '' }
+	# token type:sym<IPSECKEY>   { <$typeName> = '' }
+	# token type:sym<IXFR>       { <$typeName> = '' }
+	# token type:sym<GPOS>       { <$typeName> = '' } # deprecated ?
+	# token type:sym<HINFO>      { <$typeName> = '' } # deprecated ?
+	# token type:sym<HIP>        { <$typeName> = '' }
+	# token type:sym<IPSECKEY>   { <$typeName> = '' }
+	# token type:sym<ISDN>       { <$typeName> = '' } # deprecated ?
+	# token type:sym<KEY>        { <$typeName> = '' }
+	# token type:sym<KX>         { <$typeName> = '' }
+	# token type:sym<LOC>        { <$typeName> = '' }
+	token type:sym<MX>         { $<typeName> = [ :i 'mx' ] \h+ <mxPref> \h+ <domainName> }
+	# token type:sym<NAPTR>      { <$typeName> = '' }
+	# token type:sym<OPT>        { <$typeName> = '' }
+	token type:sym<NS>         { $<typeName> = [ :i 'ns' ] \h+ <domainName> }
+	# token type:sym<NSAP>       { <$typeName> = '' } # deprecated ?
+	# token type:sym<NSEC>       { <$typeName> = '' }
+	# token type:sym<NSEC3>      { <$typeName> = '' }
+	# token type:sym<NSEC3PARAM> { <$typeName> = '' }
+	# token type:sym<NXT>        { <$typeName> = '' } # deprecated ?
+	token type:sym<PTR>        { $<typeName> = [ :i 'ptr' ] <rrSpace>+ <domainName> }
+	# token type:sym<PX>         { <$typeName> = '' } # deprecated ?
+	# token type:sym<RP>         { <$typeName> = '' }
+	# token type:sym<RRSIG>      { <$typeName> = '' }
+	# token type:sym<RT>         { <$typeName> = '' } # deprecated ?
+	# token type:sym<SIG>        { <$typeName> = '' }
+	token type:sym<SOA>        { $<typeName> = [ :i 'soa' ] \h+ <rdataSOA> }
+	token type:sym<SPF>        { $<typeName> = [ :i 'spf' ] \h+ <rdataTXT> } #TODO defined in RFC 4408 and discontinued by RFC 7208
+	token type:sym<SRV>        { $<typeName> = [ :i 'srv' ] <rrSpace>+ <rdataSRV> }
+	# token type:sym<SSHFP>      { <$typeName> = '' }
+	# token type:sym<TA>         { <$typeName> = '' }
+	# token type:sym<TKEY>       { <$typeName> = '' }
+	# token type:sym<TLSA>       { <$typeName> = '' }
+	# token type:sym<TSIG>       { <$typeName> = '' }
+	token type:sym<TXT>        { $<typeName> = [ :i 'txt' ] <rrSpace>+ <rdataTXT> }
+	# token type:sym<WKS>        { <$typeName> = '' }
+	# token type:sym<X25>        { <$typeName> = '' }
+
+	# Resource Record data
+	# depends on TYPE
+	# TODO simplify : directly use IPv[46] in type tokens
+	token rdataA {<ipv4>}
+
+	# IPv4
+	token ipv4 {
+		<d8> ** 4 % '.' # From http://rosettacode.org/wiki/Parse_an_IP_Address#Perl_6
+	}
+
+	# MX preference
+	token mxPref {
+		\d ** 1..2
+	}
+
+	# TODO : check domain & rdataSOAActionDomain are correct
+	token rdataSOA {
+		<domainName> <rrSpace>+ <rdataSOAActionDomain> <rrSpace>*
+		<rdataSOASerial> <rrSpace>* <comment>?
+		<rrSpace>* <rdataSOARefresh> <rrSpace>* <comment>?
+		<rrSpace>* <rdataSOARetry>   <rrSpace>* <comment>?
+		<rrSpace>* <rdataSOAExpire>  <rrSpace>* <comment>?
+		<rrSpace>* <rdataSOAMin> <rrSpace>* <commentWithoutNewline>*
+
+		{
+			unless defined $currentTTL {
+				$currentTTL = $<rdataSOAMin>.Str.Numeric unless $currentTTL;
+			}
+		}
+	}
+
+	token rdataSOAActionDomain { <domainName> }
+	token rdataSOASerial       { <d32>        }
+	token rdataSOARefresh      { <d32>        }
+	token rdataSOARetry        { <d32>        }
+	token rdataSOAExpire       { <d32>        }
+	token rdataSOAMin          { <d32>        }
+
+	token rdataTXT {
+		[ <text> | <quotedText> ]+
+		<?{ $/.Str.chars < $maxRdataTXTLengh }>
+	}
+
+	# A suit of chars, without spaces
+	token text {
+		[ <-[ ( ) \v " \ ]> | <rrSpace> | '\"']+
+	}
+
+	# A suit of chars, with space availables
+	token quotedText {
+		'"' [ <-[ \n " ]> | "\\\n" | '\"' ]* '"'
+	}
+
+	token rdataSRV {
+		<rdataSRVPriority> <rrSpace>
+		<rdataSRVWeight>   <rrSpace>
+		<rdataSRVPort>     <rrSpace>
+		<rdataSRVTarget>
+	}
+
+	token rdataSRVPriority { <d16>        }
+	token rdataSRVWeight   { <d16>        }
+	token rdataSRVPort     { <d16>        }
+	token rdataSRVTarget   { <domainName> }
+
+	# int 8 bits
+	token d8 {
+		\d+ <?{ $/ < 256 }> # or $/ < 2 ** 8
+	}
+
+	# int 16 bits
+	token d16 {
+		\d+ <?{ $/ < 65536 }> # or $/ < 2 ** 16
+	}
+
+	# int 32 bits
+	token d32 {
+		\d+ <?{ $/ < 4294967296 }> # or $/ < 2 ** 32
+	}
+
+	# A resource record space (more or less)
+	# Can be a classic space, or a ( or )
+	# for \n space, at least one ( have to be matched
+	# It can contains a comment wich have to be inside a () sequence
+	token rrSpace {
+		[
+			\h          |
+			<rrNewLine> |
+			<paren>
+		]+
+		[ <commentWithoutNewline> <rrNewLine> ]?
+	}
+
+	# A resource record specific new line
+	# Match only if $parenCount is positive, in other words,
+	# if we are currently in a multi-line sequence
+	token rrNewLine {
+		\n <?{ $parenCount > 0; }>
+	}
+
+	# PAREN
+	# Parenthese definition
+	proto token paren { * }
+	token paren:sym<po> { '(' { $parenCount++; } }
+	token paren:sym<pf> { ')' <?{ $parenCount > 0; }> { $parenCount--; } }
+}
