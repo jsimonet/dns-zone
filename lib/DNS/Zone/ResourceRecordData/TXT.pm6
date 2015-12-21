@@ -1,8 +1,8 @@
 use v6;
 
-use DNS::Zone::ResourceRecordData::ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class TXT is ResourceRecordData
+class DNS::Zone::ResourceRecordData::TXT is DNS::Zone::ResourceRecordData
 {
 	has Str $.txt is rw;
 

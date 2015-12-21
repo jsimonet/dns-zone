@@ -1,15 +1,15 @@
 use v6;
 
-use DNS::Zone::ResourceRecordData::ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class ResourceRecord
+class DNS::Zone::ResourceRecord
 {
 
-	has Str                $.domainName       is rw = '';
-	has Str                $.domainNameParsed is rw = ''; # For origin/previous domain
-	has Str                $.class            is rw = '';
-	has Str                $.ttl              is rw = '';
-	has ResourceRecordData $.rdata            is rw;
+	has Str                           $.domainName       is rw = '';
+	has Str                           $.domainNameParsed is rw = ''; # For origin/previous domain
+	has Str                           $.class            is rw = '';
+	has Str                           $.ttl              is rw = '';
+	has DNS::Zone::ResourceRecordData $.rdata            is rw;
 
 	# has Bool               $.changed = False;
 

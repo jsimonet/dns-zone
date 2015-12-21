@@ -8,7 +8,7 @@ use Grammar::Tracer;
 =author Julien Simonet
 =version 0.1
 =end pod
-grammar Modern {
+grammar DNS::Zone::Grammars::Modern {
 
 	# Used to count opened parentheses.
 	my $parenCount = 0;

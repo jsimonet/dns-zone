@@ -1,6 +1,6 @@
 use v6;
 
-class ResourceRecordData
+class DNS::Zone::ResourceRecordData
 {
 	method gist()
 	{}

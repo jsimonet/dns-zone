@@ -1,8 +1,8 @@
 use v6;
 
-use DNS::Zone::ResourceRecordData::ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class SPF is ResourceRecordData
+class DNS::Zone::ResourceRecordData::SPF is DNS::Zone::ResourceRecordData
 {
     has Str $.spf is rw;
 

@@ -10,12 +10,12 @@ use DNS::Zone::Grammars::ModernActions;
 	retreive specific lines (based on some research paramters). New lines can
 	be added too.
 =end pod
-class Zone
+class DNS::Zone
 {
 
 	my subset PositiveInteger of Int where * >= 0;
 
-	has ResourceRecord @.rr is rw;
+	has DNS::Zone::ResourceRecord @.rr is rw;
 
 	method gist()
 	{
@@ -33,7 +33,7 @@ class Zone
 	}
 
 	multi method add() { * }
-	multi method add( ResourceRecord :$rr!, PositiveInteger :$position! )
+	multi method add( DNS::Zone::ResourceRecord :$rr!, PositiveInteger :$position! )
 	{
 		if $position < @.rr.elems
 		{
@@ -42,13 +42,13 @@ class Zone
 		}
 	}
 
-	multi method add( ResourceRecord :$rr! )
+	multi method add( DNS::Zone::ResourceRecord :$rr! )
 	{
 		say "in second";
 		push @.rr, $rr;
 	}
 
-	multi method add( ResourceRecord :@rrs!, PositiveInteger :$position! )
+	multi method add( DNS::Zone::ResourceRecord :@rrs!, PositiveInteger :$position! )
 	{
 		if $position < @.rr.elems
 		{
@@ -56,7 +56,7 @@ class Zone
 		}
 	}
 
-	multi method add( ResourceRecord :@rrs! )
+	multi method add( DNS::Zone::ResourceRecord :@rrs! )
 	{
 		push @.rr, $_ for @rrs;
 	}
@@ -78,8 +78,8 @@ class Zone
 
 	method load( Str :$data! )
 	{
-		my $actions = ModernActions.new;
-		my $parsed = Modern.parse( $data, :$actions );
+		my $actions = DNS::Zone::ModernActions.new;
+		my $parsed = DNS::Zone::Grammars::Modern.parse( $data, :$actions );
 		if $parsed
 		{
 			@!rr = $parsed.ast;

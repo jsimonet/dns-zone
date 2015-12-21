@@ -1,8 +1,8 @@
 use v6;
 
-use DNS::Zone::ResourceRecordData::ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class SRV is ResourceRecordData
+class DNS::Zone::ResourceRecordData::SRV is DNS::Zone::ResourceRecordData
 {
 	has Int $.priority is rw;
 	has Int $.weight   is rw;

@@ -44,10 +44,10 @@ sub MAIN(Str :$testFile!)
 		#	say "File $testFile not parsed."
 		#}
 
-		my $zone = Zone.new;
+		my $zone = DNS::Zone.new;
 		$zone.load( :$data );
-		my $rdata = A.new( ipAdress => '10.0.0.2' );
-		my $rr = ResourceRecord.new(
+		my $rdata = DNS::Zone::ResourceRecordData::A.new( ipAdress => '10.0.0.2' );
+		my $rr = DNS::Zone::ResourceRecord.new(
 				domainName=> 'second',
 				rdata => $rdata);
 		#say $rr.type;

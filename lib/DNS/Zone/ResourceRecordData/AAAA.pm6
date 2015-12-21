@@ -1,8 +1,8 @@
 use v6;
 
-use DNS::Zone::ResourceRecordData::ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class AAAA is ResourceRecordData
+class DNS::Zone::ResourceRecordData::AAAA is DNS::Zone::ResourceRecordData
 {
 	has Str $.ip6Adress is rw;
 

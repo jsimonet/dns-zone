@@ -1,8 +1,8 @@
 use v6;
 
-use DNS::Zone::ResourceRecordData::ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class SOA is ResourceRecordData
+class DNS::Zone::ResourceRecordData::SOA is DNS::Zone::ResourceRecordData
 {
 	has $.domainName;
 	has $.domainAction;
