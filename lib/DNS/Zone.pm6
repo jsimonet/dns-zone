@@ -86,8 +86,8 @@ class DNS::Zone
 		}
 		else
 		{
-			say "not parsed!";
 			# Throw an error
+			die "not parsed!";
 		}
 	}
 }
