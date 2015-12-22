@@ -14,4 +14,7 @@ class DNS::Zone::ResourceRecordData::SPF is DNS::Zone::ResourceRecordData
 
     method gen()
     { return $.spf; }
+
+	method type()
+	{ "SPF" }
 }

@@ -14,7 +14,7 @@ class DNS::Zone::ResourceRecord
 	# has Bool               $.changed = False;
 
 	method type
-	{ $!rdata.WHAT.^name }
+	{ $!rdata.type }
 
 	method gist()
 	{

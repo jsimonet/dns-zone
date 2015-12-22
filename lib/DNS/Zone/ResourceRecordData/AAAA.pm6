@@ -14,4 +14,7 @@ class DNS::Zone::ResourceRecordData::AAAA is DNS::Zone::ResourceRecordData
 
 	method gen()
 	{ return $.ip6Adress; }
+
+	method type
+	{ "AAAA" }
 }

@@ -50,4 +50,7 @@ class DNS::Zone::ResourceRecordData::SOA is DNS::Zone::ResourceRecordData
 	{
 		return "$.domainName $.domainAction $.serial $.refresh $.retry $.expire $.min";
 	}
+
+	method type()
+	{ "SOA" }
 }

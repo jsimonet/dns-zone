@@ -16,4 +16,6 @@ class DNS::Zone::ResourceRecordData::MX is DNS::Zone::ResourceRecordData
 	method gen()
 	{ return "$.mxPref $.domainName"; }
 
+	method type()
+	{ "MX" }
 }

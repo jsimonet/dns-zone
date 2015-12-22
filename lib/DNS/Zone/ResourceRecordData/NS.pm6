@@ -14,4 +14,7 @@ class DNS::Zone::ResourceRecordData::NS is DNS::Zone::ResourceRecordData
 
 	method gen()
 	{ return $.domainName; }
+
+	method type()
+	{ "NS" }
 }

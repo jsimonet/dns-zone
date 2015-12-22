@@ -25,4 +25,7 @@ class DNS::Zone::ResourceRecordData::A is DNS::Zone::ResourceRecordData
 
 	method gen()
 	{ return $.ipAdress; }
+
+	method type()
+	{ "A" }
 }

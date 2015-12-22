@@ -14,4 +14,7 @@ class DNS::Zone::ResourceRecordData::TXT is DNS::Zone::ResourceRecordData
 
 	method gen()
 	{ return $.txt; }
+
+	method type()
+	{ "TXT" }
 }

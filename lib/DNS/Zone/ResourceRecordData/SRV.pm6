@@ -17,4 +17,7 @@ class DNS::Zone::ResourceRecordData::SRV is DNS::Zone::ResourceRecordData
 
 	method gen()
 	{ return "$.priority $.weight $.port $.target"; }
+
+	method type()
+	{ "SRV" }
 }

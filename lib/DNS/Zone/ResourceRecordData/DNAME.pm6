@@ -14,4 +14,7 @@ class DNS::Zone::ResourceRecordData::DNAME is DNS::Zone::ResourceRecordData
 
 	method gen()
 	{ return $.domainName; }
+
+	method type()
+	{ "DNAME" }
 }
