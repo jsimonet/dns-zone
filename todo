@@ -29,8 +29,9 @@
 - Some rules do not match if "use Grammar::Debugger" or "use Grammar::Tracer" are disabled ;
 - in lib/Zone.pm6, « splice » has an strange comportement, depending it is used in OO way, or not.
 
-# Idea to split RFC compliant from modern syntax (used in many softwares).
+# [In Progress: dev/rfcSplit] Idea to split RFC compliant from modern syntax (used in many softwares).
 role RFC5205 {
 	type:<HIP> { * }
 }
 grammar Modern does RFC5205 { }
+One file per RFC (~28) (cf notes/references.txt) plus one file per action, so ~60 files…
