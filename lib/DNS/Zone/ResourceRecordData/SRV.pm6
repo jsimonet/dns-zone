@@ -1,8 +1,8 @@
 use v6;
 
-use ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class ResourceRecordDataSRV is ResourceRecordData
+class DNS::Zone::ResourceRecordData::SRV is DNS::Zone::ResourceRecordData
 {
 	has Int $.priority is rw;
 	has Int $.weight   is rw;
@@ -17,4 +17,7 @@ class ResourceRecordDataSRV is ResourceRecordData
 
 	method gen()
 	{ return "$.priority $.weight $.port $.target"; }
+
+	method type()
+	{ "SRV" }
 }

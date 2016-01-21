@@ -1,8 +1,8 @@
 use v6;
 
-use ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class ResourceRecordDataTXT is ResourceRecordData
+class DNS::Zone::ResourceRecordData::TXT is DNS::Zone::ResourceRecordData
 {
 	has Str $.txt is rw;
 
@@ -14,4 +14,7 @@ class ResourceRecordDataTXT is ResourceRecordData
 
 	method gen()
 	{ return $.txt; }
+
+	method type()
+	{ "TXT" }
 }

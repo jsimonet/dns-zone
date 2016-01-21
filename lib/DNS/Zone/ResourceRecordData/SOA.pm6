@@ -1,8 +1,8 @@
 use v6;
 
-use ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class ResourceRecordDataSOA is ResourceRecordData
+class DNS::Zone::ResourceRecordData::SOA is DNS::Zone::ResourceRecordData
 {
 	has $.domainName;
 	has $.domainAction;
@@ -50,4 +50,7 @@ class ResourceRecordDataSOA is ResourceRecordData
 	{
 		return "$.domainName $.domainAction $.serial $.refresh $.retry $.expire $.min";
 	}
+
+	method type()
+	{ "SOA" }
 }

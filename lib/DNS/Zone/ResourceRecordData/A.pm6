@@ -1,8 +1,8 @@
 use v6;
 
-use ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class ResourceRecordDataA is ResourceRecordData
+class DNS::Zone::ResourceRecordData::A is DNS::Zone::ResourceRecordData
 {
 	has Str $.ipAdress is rw;
 
@@ -25,4 +25,7 @@ class ResourceRecordDataA is ResourceRecordData
 
 	method gen()
 	{ return $.ipAdress; }
+
+	method type()
+	{ "A" }
 }

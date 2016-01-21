@@ -1,8 +1,8 @@
 use v6;
 
-use ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class ResourceRecordDataDNAME is ResourceRecordData
+class DNS::Zone::ResourceRecordData::CNAME is DNS::Zone::ResourceRecordData
 {
 	has Str $.domainName is rw;
 
@@ -14,4 +14,7 @@ class ResourceRecordDataDNAME is ResourceRecordData
 
 	method gen()
 	{ return $.domainName; }
+
+	method type()
+	{ "CNAME" }
 }

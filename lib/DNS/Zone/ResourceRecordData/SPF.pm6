@@ -1,8 +1,8 @@
 use v6;
 
-use ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class ResourceRecordDataSPF is ResourceRecordData
+class DNS::Zone::ResourceRecordData::SPF is DNS::Zone::ResourceRecordData
 {
     has Str $.spf is rw;
 
@@ -14,4 +14,7 @@ class ResourceRecordDataSPF is ResourceRecordData
 
     method gen()
     { return $.spf; }
+
+	method type()
+	{ "SPF" }
 }

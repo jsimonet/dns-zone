@@ -1,8 +1,8 @@
 use v6;
 
-use ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class ResourceRecordDataPTR is ResourceRecordData
+class DNS::Zone::ResourceRecordData::PTR is DNS::Zone::ResourceRecordData
 {
 	has Str $.domainName is rw;
 
@@ -14,4 +14,7 @@ class ResourceRecordDataPTR is ResourceRecordData
 
 	method gen()
 	{ return "$.domainName"; }
+
+	method type()
+	{ "PTR" }
 }

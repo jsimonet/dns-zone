@@ -1,8 +1,8 @@
 use v6;
 
-use ResourceRecordData;
+use DNS::Zone::ResourceRecordData;
 
-class ResourceRecordDataMX is ResourceRecordData
+class DNS::Zone::ResourceRecordData::MX is DNS::Zone::ResourceRecordData
 {
 	has $.mxPref is rw;
 	has Str $.domainName is rw;
@@ -16,4 +16,6 @@ class ResourceRecordDataMX is ResourceRecordData
 	method gen()
 	{ return "$.mxPref $.domainName"; }
 
+	method type()
+	{ "MX" }
 }
