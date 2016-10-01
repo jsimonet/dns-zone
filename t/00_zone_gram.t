@@ -5,7 +5,7 @@ use lib 'lib';
 
 # Test file for zone grammar parsing.
 
-use Grammars::DNSZone;
+use DNS::Zone::Grammars::Modern;
 
 # General format of "resource record" :
 # DOMAIN_NAME CLASS TTL TYPE DATA ; COMMENTS
@@ -51,7 +51,7 @@ my @toTestAreNok = (
 
 say '----------------------------';
 say 'Following test must succeed.';
-my $dnsparser = DNSZone.new;
+my $dnsparser = DNS::Zone::Grammars::Modern.new;
 for (@toTestAreOk) {
 	# ok DNSZone.parse($_) , $_;
 	ok $dnsparser.parse($_),$_;
@@ -60,7 +60,7 @@ for (@toTestAreOk) {
 say '--------------------------';
 say 'Following test must fails.';
 for (@toTestAreNok) {
-	nok DNSZone.parse($_) , $_;
+	nok $dnsparser.parse($_) , $_;
 }
 
 # Tests for specific rules
