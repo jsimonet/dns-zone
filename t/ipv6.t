@@ -3,13 +3,14 @@ use Test;
 
 use lib 'lib';
 
-use Grammars::DNSZone;
-use Grammars::DNSZoneAction;
+use DNS::Zone::Grammars::Modern;
 
 my @toTestAreOk = (
 	'2000:1000:1000:1000:2000:1000:1000:1000',
+	'aaaa:1234:4567:7898:aaaa:1234:4567:7898',
 	'2000::2000:1000:1000:1000',
 	'2000::2000:1000:1000',
+	'aaaa:1234:4567:7898:aaaa::4567:7898',
 	'::', # 0000:0000:0000:0000:0000:0000:0000:0000
 	'::1',
 	'::10.10.1.1',
@@ -27,14 +28,16 @@ my @toTestAreNOk = (
 	'1000::2000:10.0.0',                       # Incomplete IPv4
 );
 
-my $action = DNSZoneAction.new;
+plan @toTestAreOk.elems + @toTestAreNOk.elems;
 
-for @toTestAreOk
+for @toTestAreOk -> $t
 {
-	ok DNSZone.parse($_, :actions($action), rule => 'ipv6' ), $_;
+	ok DNS::Zone::Grammars::Modern.parse($t, rule => 'ipv6' ), $t;
 }
 
-for @toTestAreNOk
+for @toTestAreNOk -> $t
 {
-	nok DNSZone.parse($_, :actions($action), rule => 'ipv6' ), $_;
+	nok DNS::Zone::Grammars::Modern.parse($t, rule => 'ipv6' ), $t;
 }
+
+done-testing;

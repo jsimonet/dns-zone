@@ -1,7 +1,7 @@
 use v6;
 
 # use Grammar::Debugger;
-use Grammar::Tracer;
+# use Grammar::Tracer;
 
 =begin pod
 =synopsis Grammar to parse a dns zone file, including RFC 1035.
