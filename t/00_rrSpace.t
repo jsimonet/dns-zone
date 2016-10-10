@@ -13,6 +13,7 @@ my @toTestAreOk = (
 	'(',
 	')',
 	'()',
+	"(\n)",
 );
 
 my @toTestAreNOk = (
