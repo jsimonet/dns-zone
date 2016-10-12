@@ -126,17 +126,20 @@ grammar DNS::Zone::Grammars::Modern {
 	}
 
 	# TTL, can be:
-	# 42 1s 2m 3h 4j 5w
+	# 42 1s 2m 3h 4j 5w, respectively seconds, minutes, hours, days and week
 	token ttl {
 		(<[0..9]>+) (<[smhdw]>?)
 		<?{
-			# Checks if the final value is inferior to an signed int32
-			$1 ~~ 'w' && ($0 * 604800 <= 2147483647) ||
-			$1 ~~ 'd' && ($0 * 86400  <= 2147483647) ||
-			$1 ~~ 'h' && ($0 * 3600   <= 2147483647) ||
-			$1 ~~ 'm' && ($0 * 60     <= 2147483647) ||
-			$1 ~~ 's' && ($0          <= 2147483647) ||
-			$1 ~~ ''  && ($0          <= 2147483647)
+			# Checks if the final value is positive and
+			# inferior to a signed int32
+			$0 > 0 && (
+				$1 ~~ 'w' && ($0 * 604800 <= 2147483647) ||
+				$1 ~~ 'd' && ($0 * 86400  <= 2147483647) ||
+				$1 ~~ 'h' && ($0 * 3600   <= 2147483647) ||
+				$1 ~~ 'm' && ($0 * 60     <= 2147483647) ||
+				$1 ~~ 's' && ($0          <= 2147483647) ||
+				$1 ~~ ''  && ($0          <= 2147483647)
+			)
 		}>
 	}
 
