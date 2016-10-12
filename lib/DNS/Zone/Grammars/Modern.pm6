@@ -121,8 +121,8 @@ grammar DNS::Zone::Grammars::Modern {
 	# If no class or <ttl> are matched, no <rrSpace> either so parenthese
 	# count is ok
 	token ttlOrClass {
-		[ [ <class> | <ttl> ] <rrSpace>+ ] ** 1..2 <?{ $<class>.elems <= 1 && $<ttl>.elems <= 1; }> |
-		''
+		[ [ <class> | <ttl> ] <rrSpace>+ ] ** 0..2
+		<?{ $<class>.elems <= 1 && $<ttl>.elems <= 1 }>
 	}
 
 	# TTL, can be:
