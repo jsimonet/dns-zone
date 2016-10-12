@@ -100,14 +100,13 @@ grammar DNS::Zone::Grammars::Modern {
 	token domainName:sym<fqdn> {
 		# Same as labeled but with a final dot
 		<domainNameLabel> ** { 1 .. $maxDomainNameLengh/2 }  % '.' '.'
-		<?{
-			$/.Str.chars <= $maxDomainNameLengh;
-		}>
+		<?{ $/.Str.chars <= $maxDomainNameLengh; }>
 	}
 
 	token domainName:sym<labeled> {
 		<domainNameLabel> ** { 1 .. $maxDomainNameLengh/2 }  % '.'
-		#<?{ $/.Str.chars + 1 + $origin.chars < $maxDomainNameLengh; }>
+		<?{ $/.Str.chars + 1 + $origin.chars < $maxDomainNameLengh }>
+		# Lengh of matched string + lenght of the point + lenght of the origin
 	}
 
 	token domainName:sym<@> { '@' }

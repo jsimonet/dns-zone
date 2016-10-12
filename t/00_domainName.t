@@ -12,7 +12,7 @@ my @toTestAreOk = (
 	'domainame.tld.',
 	'@',
 	'domainnottoolong.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldj.lmkjdmlkfjdlkmfjldkkfjldjf.jkljdlkfjkmldfdjfjk.mljdlmkfjlkmdklfldd.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldj.lmkjdmlkfjdlkmfjldkkfjldjf.jkljdlkfjkmldfdjfjk.mljdlmkfjlkmdklffml.lmkjooidjjldkl.',
-	'domainnottoolong.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldj.lmkjdmlkfjdlkmfjldkkfjldjf.jkljdlkfjkmldfdjfjk.mljdlmkfjlkmdklfldd.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldj.lmkjdmlkfjdlkmfjldkkfjldjf.jkljdlkfjkmldfdjfjk.mljdlmkfjlkmdklffml.lmkjooidjjldkjl',
+	'domainnottoolong.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldj.lmkjdmlkfjdlkmfjldkkfjldjf.jkljdlkfjkmldfdjfjk.mljdlmkfjlkmdklfldd.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldj.lmkjdmlkfjdlkmfjldkkfjldjf.jkljdlkfjkmldfdjfjk.mljdlmkfjlkmdklffml.lmkjooidjjldk',
 );
 
 my @toTestAreNOk = (
