@@ -6,25 +6,17 @@ use DNS::Zone;
 #use DNS::Zone::Grammars::Modern;
 #use DNS::Zone::Grammars::ModernActions;
 #use DNS::Zone::ResourceRecord;
-use Test;
-
-plan 1;
-skip-rest 'Will not pass yet';
-exit;
 
 sub MAIN(Str :$testFile!)
 {
 	my $data = $testFile.IO.slurp;
 	if $data
 	{
+		# Load the file
 		my $zone = DNS::Zone.new;
 		$zone.load( :$data );
-		my $rdata = DNS::Zone::ResourceRecordData::A.new( ipAdress => '10.0.0.2' );
-		my $rr = DNS::Zone::ResourceRecord.new(
-				domainName=> 'second',
-				rdata => $rdata);
-		#say $rr.type;
-		$zone.add( :$rr, position => 2 );
+
+		# Print the new file
 		say $zone.gen;
 	}
 
