@@ -90,7 +90,7 @@ grammar DNS::Zone::Grammars::Modern {
 
 		# Fail if grammar match an _ and the type is not SRV
 		<!{ ($<domainName>.index( '_' )).defined &&
-			$<type>.ast.type !~~ /:i SRV/ }>
+			$<type><typeName>.Str !~~ /:i SRV/ }>
 	}
 
 	# DOMAIN NAME
