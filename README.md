@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jsimonet/dns-zone.svg?branch=master)](https://travis-ci.org/jsimonet/dns-zone)
+
 # What
 
 A tool providing an easy way to manage a DNS file zone.
