@@ -17,8 +17,8 @@ use DNS::Zone::ResourceRecordData::SPF;
 =begin pod
 =head1 Synopsis
 =para
-	The action of the grammar DNSZone. This class aims to create a comprensible AST,
-	giving possibility to manipulate it easily (add/remove/alter some lines).
+	The action of the grammar DNSZone. This class aims to create a comprehensible AST,
+	giving the possibility to manipulate it easily (add/remove/alter some lines).
 =end pod
 class DNS::Zone::ModernActions
 {

@@ -8,10 +8,6 @@
 - How to make an "abstract" class (for ResourceRecord, to force childs to implements all methods)
 
 # Grammar:
-- multiline entries have problems with parentheses count
-	- an <rrSpace> rule shoud only increment or decrement the count if rule
-		is valid ; => Nope, just enter rrSpace rule only if needed
-	- the count should be valid any time, because we need it for \n validity ;
 - error exception:
 	- get line, reason, enventually continue the parsing of the other lines ;
 	- named-checkzone force ttl to 0 if value > signed int32)
@@ -19,18 +15,16 @@
 - special IPv4, like 0.0.0.0 ? => seems to be ok for named-checkzone
 
 # Grammar action:
-- should just create AST objects, no parsing or validation at all
 - for null values, get previous one (domain_name, ttl, class, …)
 - check that soa name server is defined above
 - unicode domain name <= transcode => ASCII
 
 # To check:
 - In IPv6 rule : $<ipv4>.elems returns 0, $<ipv4><d8> returns 4, is it normal that $<ipv4>.elems returns 0 ?
-- Some rules do not match if "use Grammar::Debugger" or "use Grammar::Tracer" are disabled ;
 - in lib/Zone.pm6, « splice » has an strange comportement, depending it is used in OO way, or not.
 
 # Idea to split RFC compliant from modern syntax (used in many softwares).
 role RFC5205 {
 	type:<HIP> { * }
 }
-grammar Modern does RFC5205 { }
+grammar Modern is RFC1335 is RFC5205 { } # Modern just extends RFCs grammars

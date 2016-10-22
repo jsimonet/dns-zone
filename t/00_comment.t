@@ -5,25 +5,55 @@ use Test;
 use lib 'lib';
 use DNS::Zone::Grammars::Modern;
 
-# Comments
-my @toTestAreOk = (
-	";\n",
-	";comment\n",
-	";comment",
-);
-my @toTestAreNOk = (
-	' ;fail\n',
-	";comm\n\n", # Only one newline
-);
+plan 2;
 
-for @toTestAreOk -> $t
-{
-	ok DNS::Zone::Grammars::Modern.parse($t, rule => 'comment' ), $t;
-}
+subtest {
+	# Comments with an optional carriage return
+	my @toTestAreOk = (
+		";\n",
+		";comment\n",
+		";comment",
+	);
+	my @toTestAreNOk = (
+		' ;fail\n',
+		";comm\n\n", # Only one newline
+	);
 
-for @toTestAreNOk -> $t
-{
-	nok DNS::Zone::Grammars::Modern.parse($t, rule => 'comment' ), $t;
-}
+	plan @toTestAreOk.elems + @toTestAreNOk.elems;
 
-done-testing;
+	for @toTestAreOk -> $t
+	{
+		ok DNS::Zone::Grammars::Modern.parse($t, rule => 'comment' ), $t;
+	}
+
+	for @toTestAreNOk -> $t
+	{
+		nok DNS::Zone::Grammars::Modern.parse($t, rule => 'comment' ), $t;
+	}
+
+},  'Comments';
+
+subtest {
+	# Comments without a new line
+
+	my @toTestAreOk = (
+		';comment',
+	);
+
+	my @toTestAreNOk = (
+		";comment\n",
+	);
+
+	plan @toTestAreOk.elems + @toTestAreNOk.elems;
+
+	for @toTestAreOk -> $t
+	{
+		ok DNS::Zone::Grammars::Modern.parse($t, rule => 'commentWithoutNewline' ), $t;
+	}
+
+	for @toTestAreNOk -> $t
+	{
+		nok DNS::Zone::Grammars::Modern.parse($t, rule => 'commentWithoutNewline' ), $t;
+	}
+
+}, 'Comments without a new line';

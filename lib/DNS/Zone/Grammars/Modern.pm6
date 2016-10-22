@@ -42,8 +42,12 @@ grammar DNS::Zone::Grammars::Modern {
 	token entry {
 		[ <paren> <rrSpace>* ]?
 		[
-			<resourceRecord> \h* <commentWithoutNewline>? |
-			<controlEntry>                                |
+			<resourceRecord> \h* <commentWithoutNewline>?
+			# Current TTL and current domain name have to be defined
+			<?{ $currentTTL && $currentDomainName }>
+			|
+			<controlEntry>
+			|
 			<commentWithoutNewline>
 		]?
 		[ <rrSpace> <commentWithoutNewline>? ]*
@@ -86,10 +90,7 @@ grammar DNS::Zone::Grammars::Modern {
 
 		# Fail if grammar match an _ and the type is not SRV
 		<!{ ($<domainName>.index( '_' )).defined &&
-			$<type>.ast.type !~~ /:i SRV/ }>
-
-		# Current TTL and current domain name have to be defined
-		<?{ $currentTTL && $currentDomainName }>
+			$<type><typeName>.Str !~~ /:i SRV/ }>
 	}
 
 	# DOMAIN NAME
