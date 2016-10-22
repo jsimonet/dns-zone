@@ -6,14 +6,22 @@ use lib 'lib';
 use DNS::Zone::Grammars::Modern;
 
 my @toTestAreOk = (
-	'testcomment A 10.0.0.1 ; this is a comment',
+	'testcomment A 10.0.0.1 ; this is a comment', # A resource record with a comment
 	'; only a comment',
+	' ; comment preceded by space',
+	"(\n) 	; comment preceded by some rrSpace",
 	'( dname a 10.0.0.3 )',
 	'()',
+	' ',
 );
 
 my @toTestAreNOk = (
-	'(',
+	'(',                                 # Parentheses count fails
+	"  ; comment ending with newline\n",
+	"; comment ending with newline",
+	'notype',
+	'notype in',
+	'notype in 1234',
 );
 
 plan @toTestAreOk.elems + @toTestAreNOk.elems;
