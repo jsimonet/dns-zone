@@ -15,6 +15,7 @@ my @toTestAreOk = (
 
 my @toTestAreNOk = (
 	"\$ttl 3600 domain in a 10.0.0.1",
+	'domain in a 10.0.0.1',
 );
 
 # plan @toTestAreOk.elems + @toTestAreNOk.elems;
@@ -28,9 +29,5 @@ for @toTestAreNOk -> $t
 {
 	nok DNS::Zone::Grammars::Modern.parse($t), $t;
 }
-
-# See Issue #2
-todo 'Will not pass because $currentTTL is static';
-nok DNS::Zone::Grammars::Modern.parse( 'domain in a 10.0.0.1' ); # No ttl defined
 
 done-testing;

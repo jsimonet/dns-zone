@@ -26,7 +26,6 @@ grammar DNS::Zone::Grammars::Modern {
 	my $currentDomainName;
 
 	# The last encountered ttl
-	my $currentTTL;
 
 	# TODO
 	# The origin of the zone, used to check if domains are inside the zone,
@@ -35,7 +34,10 @@ grammar DNS::Zone::Grammars::Modern {
 
 
 	# Entry point
-	token TOP { <entry>* % [ \v+ ] { $parenCount = 0; } }
+	token TOP {
+		:my $*currentTTL;
+		<entry>* % [ \v+ ] { $parenCount = 0; }
+	}
 
 	# A DNS zone file is composed of entries
 	# If no '(' at the start of the line, no space before resourceRecord.
@@ -44,7 +46,7 @@ grammar DNS::Zone::Grammars::Modern {
 		[
 			<resourceRecord> \h* <commentWithoutNewline>?
 			# Current TTL and current domain name have to be defined
-			<?{ $currentTTL && $currentDomainName }>
+			<?{ $*currentTTL && $currentDomainName }>
 			|
 			<controlEntry>
 			|
@@ -71,7 +73,7 @@ grammar DNS::Zone::Grammars::Modern {
 	proto token controlEntryAction { * }
 	token controlEntryAction:sym<TTL> {
 		[ :i 'ttl' ] \h+ <ttl>
-		{ $currentTTL = $<ttl>.Str.Numeric; }
+		{ $*currentTTL = $<ttl>.Str.Numeric; }
 	}
 
 	token controlEntryAction:sym<ORIGIN>  { [ :i 'origin' ] \h+ <domainName> }
@@ -281,8 +283,8 @@ grammar DNS::Zone::Grammars::Modern {
 		<rrSpace>* <rdataSOAMin> <rrSpace>* <commentWithoutNewline>*
 
 		{
-			unless defined $currentTTL {
-				$currentTTL = $<rdataSOAMin>.Str.Numeric unless $currentTTL;
+			unless defined $*currentTTL {
+				$*currentTTL = $<rdataSOAMin>.Str.Numeric unless $*currentTTL;
 			}
 		}
 	}
