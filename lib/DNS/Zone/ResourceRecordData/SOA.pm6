@@ -4,13 +4,13 @@ use DNS::Zone::ResourceRecordData;
 
 class DNS::Zone::ResourceRecordData::SOA is DNS::Zone::ResourceRecordData
 {
-	has $.domainName;
-	has $.domainAction;
-	has $.serial;
-	has $.refresh;
-	has $.retry;
-	has $.expire;
-	has $.min;
+	has $.domainName   is required;
+	has $.domainAction is required;
+	has $.serial       is required;
+	has $.refresh      is required;
+	has $.retry        is required;
+	has $.expire       is required;
+	has $.min          is required;
 
 	has $!changed = False;
 

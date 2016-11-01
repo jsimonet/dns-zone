@@ -4,7 +4,7 @@ use DNS::Zone::ResourceRecordData;
 
 class DNS::Zone::ResourceRecordData::AAAA is DNS::Zone::ResourceRecordData
 {
-	has Str $.ip6Adress is rw;
+	has Str $.ip6Adress is rw is required;
 
 	method gist()
 	{ return $.ip6Adress; }

@@ -4,7 +4,7 @@ use DNS::Zone::ResourceRecordData;
 
 class DNS::Zone::ResourceRecordData::A is DNS::Zone::ResourceRecordData
 {
-	has Str $.ipAdress is rw;
+	has Str $.ipAdress is rw is required;
 
 	has $.changed = False;
 

@@ -11,6 +11,6 @@ class DNS::Zone::ResourceRecordData
 	method gen()
 	{}
 
-	method type()
-	{ die "Unimplemented method type."; }
+	proto method type()
+	{}
 }
