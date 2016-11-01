@@ -113,7 +113,11 @@ grammar DNS::Zone::Grammars::Modern {
 	token domainName:sym<@> { '@' }
 
 	token domainNameLabel {
-		<alnum> [ <alnum> | '-' ] ** {0 .. $maxLabelDomainNameLengh - 1}
+		<domainNameLabelChar> [ <domainNameLabelChar> | '-' ] ** {0 .. $maxLabelDomainNameLengh - 1}
+	}
+
+	token domainNameLabelChar {
+		<[a..zA..Z0..9_]>
 	}
 
 	# TTL AND CLASS
