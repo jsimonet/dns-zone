@@ -16,13 +16,13 @@ class DNS::Zone::ResourceRecordData::SOA is DNS::Zone::ResourceRecordData
 
 	method isChanged { $!changed }
 
-	method domainName   { self!proxy($!domainName) }
-	method domainAction { self!proxy($!domainName) }
-	method serial       { self!proxy($!serial)     }
-	method refresh      { self!proxy($!refresh)    }
-	method retry        { self!proxy($!retry)      }
-	method expire       { self!proxy($!expire)     }
-	method min          { self!proxy($!min)        }
+	method domainName   { self!proxy($!domainName)   }
+	method domainAction { self!proxy($!domainAction) }
+	method serial       { self!proxy($!serial)       }
+	method refresh      { self!proxy($!refresh)      }
+	method retry        { self!proxy($!retry)        }
+	method expire       { self!proxy($!expire)       }
+	method min          { self!proxy($!min)          }
 
 	method !proxy(\attr)
 	{
