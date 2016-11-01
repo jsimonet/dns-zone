@@ -35,7 +35,7 @@ grammar DNS::Zone::Grammars::Modern {
 
 
 	# Entry point
-	token TOP { [ <entry> \v+ ]+ { $parenCount = 0; } }
+	token TOP { <entry>* % [ \v+ ] { $parenCount = 0; } }
 
 	# A DNS zone file is composed of entries
 	# If no '(' at the start of the line, no space before resourceRecord.
