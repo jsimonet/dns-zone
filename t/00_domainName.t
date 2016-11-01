@@ -21,7 +21,8 @@ my @toTestAreNOk = (
 	'domaintoolong.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldj.lmkjdmlkfjdlkmfjldkkfjldjf.jkljdlkfjkmldfdjfjk.mljdlmkfjlkmdklfldd.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldj.lmkjdmlkfjdlkmfjldkkfjldjf.jkljdlkfjkmldfdjfjk.mljdlmkfjlkmdklfldlmkdjfml.lmkjdmlfjldkf.lmkjdlmfjlmd.mlkjdf.',
 	'domaintoolong.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldj.lmkjdmlkfjdlkmfjldkkfjldjf.jkljdlkfjkmldfdjfjk.mljdlmkfjlkmdklfldd.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldj.lmkjdmlkfjdlkmfjldkkfjldjf.jkljdlkfjkmldfdjfjk.mljdlmkfjlkmdklfldlmkdjfml.lmkjdmlfjldkf.lmkjdlmfjlmd.mlkjdf',
 	'labeltoolong.lmdjkflmdjflmjdlmfjlmkdjflmkdjlmkfjlmdjfldjabcdlkjdflmjdllkdjfff.',
-	'nolabel..fr'
+	'nolabel..fr',
+	'domain_sub',
 );
 
 plan @toTestAreOk.elems + @toTestAreNOk;
