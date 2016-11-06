@@ -33,7 +33,7 @@ grammar DNS::Zone::Grammars::Modern {
 
 		# Used to check if ttl is specified
 		# Will be used for define ttl from previous entry
-		my $*currentTTL = 0;
+		my $*currentTTL;
 		nextwith |c;
 	}
 
@@ -151,6 +151,9 @@ grammar DNS::Zone::Grammars::Modern {
 				$1 ~~ ''  && ($0          <= 2147483647)
 			)
 		}>
+		# TODO save real value of the ttl (depends on $1)
+		# Only save ttl if it is not defined (before type soa or $ttl)
+		{ $*currentTTL //= $0.Str }
 	}
 
 	# CLASS

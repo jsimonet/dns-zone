@@ -13,23 +13,21 @@ my @toTestAreOk = (
 	'( dname 1234 a 10.0.0.3 )',
 	'()',
 	' ',
+	"; comment ending without newline",
 );
 
 my @toTestAreNOk = (
 	'(',                                 # Parentheses count fails
 	"  ; comment ending with newline\n",
-	"; comment ending with newline",
 	'notype',
 	'notype in',
 	'notype in 1234',
+	'notype 1234 in',
+	'nottl in txt "no ttl in rr"',
 	'( dname a 10.0.0.3 )',              # No TTL defined
 );
 
 plan @toTestAreOk.elems + @toTestAreNOk.elems;
-
-# Need to set up a ttl to check the rule "entry"
-my $parser = DNS::Zone::Grammars::Modern.new;
-$parser.parse( '$ttl 1234', :rule<entry> );
 
 for @toTestAreOk -> $t
 {
