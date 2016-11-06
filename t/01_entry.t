@@ -6,11 +6,11 @@ use lib 'lib';
 use DNS::Zone::Grammars::Modern;
 
 my @toTestAreOk = (
-	'testcomment A 10.0.0.1 ; this is a comment', # A resource record with a comment
+	'testcomment 3600 A 10.0.0.1 ; this is a comment', # A resource record with a comment
 	'; only a comment',
 	' ; comment preceded by space',
 	"(\n) 	; comment preceded by some rrSpace",
-	'( dname a 10.0.0.3 )',
+	'( dname 1234 a 10.0.0.3 )',
 	'()',
 	' ',
 );
@@ -22,6 +22,7 @@ my @toTestAreNOk = (
 	'notype',
 	'notype in',
 	'notype in 1234',
+	'( dname a 10.0.0.3 )',              # No TTL defined
 );
 
 plan @toTestAreOk.elems + @toTestAreNOk.elems;

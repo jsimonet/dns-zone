@@ -25,17 +25,23 @@ grammar DNS::Zone::Grammars::Modern {
 	# The last encountered domain name
 	my $currentDomainName;
 
-	# The last encountered ttl
-
 	# TODO
 	# The origin of the zone, used to check if domains are inside the zone,
 	# and to check if NS is defined
 	my $origin = '';
 
+	method parse( |c ) {
+		# Used to count opened parentheses.
+		my $*parenCount = 0;
+
+		# Used to check if ttl is specified
+		# Will be used for define ttl from previous entry
+		my $*currentTTL = 0;
+		nextwith |c;
+	}
 
 	# Entry point
 	token TOP {
-		:my $*currentTTL;
 		<entry>* % [ \v+ ] { $parenCount = 0; }
 	}
 
