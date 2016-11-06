@@ -31,9 +31,12 @@ grammar DNS::Zone::Grammars::Modern {
 		# Used to count opened parentheses.
 		my $*parenCount = 0;
 
-		# Used to check if ttl is specified
-		# Will be used for define ttl from previous entry
+		# Used to check if ttl is specified.
 		my $*currentTTL;
+
+		# is $ttl or soa already encountered.
+		my Bool $*encounteredTTL = False;
+
 		nextwith |c;
 	}
 
@@ -76,7 +79,10 @@ grammar DNS::Zone::Grammars::Modern {
 	proto token controlEntryAction { * }
 	token controlEntryAction:sym<TTL> {
 		[ :i 'ttl' ] \h+ <ttl>
-		{ $*currentTTL = $<ttl>.Str.Numeric; }
+		{
+			$*encounteredTTL = True;
+			$*currentTTL = $<ttl>.Str.Numeric;
+		}
 	}
 
 	token controlEntryAction:sym<ORIGIN>  { [ :i 'origin' ] \h+ <domainName> }
@@ -153,7 +159,7 @@ grammar DNS::Zone::Grammars::Modern {
 		}>
 		# TODO save real value of the ttl (depends on $1)
 		# Only save ttl if it is not defined (before type soa or $ttl)
-		{ $*currentTTL //= $0.Str }
+		{ $*encounteredTTL or $*currentTTL = $0.Str }
 	}
 
 	# CLASS
@@ -289,9 +295,8 @@ grammar DNS::Zone::Grammars::Modern {
 		<rrSpace>* <rdataSOAMin> <rrSpace>* <commentWithoutNewline>*
 
 		{
-			unless defined $*currentTTL {
-				$*currentTTL = $<rdataSOAMin>.Str.Numeric unless $*currentTTL;
-			}
+			$*encounteredTTL = True;
+			$*currentTTL //= $<rdataSOAMin>.Str.Numeric unless $*currentTTL;
 		}
 	}
 
