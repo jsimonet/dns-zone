@@ -55,7 +55,7 @@ grammar DNS::Zone::Grammars::Modern {
 			|
 			<commentWithoutNewline>
 		]?
-		[ <rrSpace> <commentWithoutNewline>? ]*
+		[ <rrSpace> <commentWithoutNewline>? ]?
 		<?{ $*parenCount == 0 }>
 		#<error> \v*
 	}
