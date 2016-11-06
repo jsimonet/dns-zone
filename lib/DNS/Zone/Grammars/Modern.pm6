@@ -10,9 +10,6 @@ use v6;
 =end pod
 grammar DNS::Zone::Grammars::Modern {
 
-	# Used to count opened parentheses.
-	my $parenCount = 0;
-
 	# Used to check the domain name lengh.
 	my $maxDomainNameLengh = 254;
 
@@ -42,7 +39,7 @@ grammar DNS::Zone::Grammars::Modern {
 
 	# Entry point
 	token TOP {
-		<entry>* % [ \v+ ] { $parenCount = 0; }
+		<entry>* % [ \v+ ] { $*parenCount = 0; }
 	}
 
 	# A DNS zone file is composed of entries
@@ -59,7 +56,7 @@ grammar DNS::Zone::Grammars::Modern {
 			<commentWithoutNewline>
 		]?
 		[ <rrSpace> <commentWithoutNewline>? ]*
-		<?{ $parenCount == 0 }>
+		<?{ $*parenCount == 0 }>
 		#<error> \v*
 	}
 
@@ -366,12 +363,12 @@ grammar DNS::Zone::Grammars::Modern {
 	# Match only if $parenCount is positive, in other words,
 	# if we are currently in a multi-line sequence
 	token rrNewLine {
-		\n <?{ $parenCount > 0; }>
+		\n <?{ $*parenCount > 0; }>
 	}
 
 	# PAREN
 	# Parenthese definition
 	proto token paren { * }
-	token paren:sym<po> { '(' { $parenCount++; } }
-	token paren:sym<pf> { ')' <?{ $parenCount > 0; }> { $parenCount--; } }
+	token paren:sym<po> { '(' { $*parenCount++; } }
+	token paren:sym<pf> { ')' <?{ $*parenCount > 0; }> { $*parenCount--; } }
 }
