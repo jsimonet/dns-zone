@@ -11,13 +11,13 @@ use v6;
 grammar DNS::Zone::Grammars::Modern {
 
 	# Used to check the domain name lengh.
-	my $maxDomainNameLengh = 254;
+	my constant $maxDomainNameLengh = 254;
 
 	# Used to check the TXT data.
-	my $maxRdataTXTLengh = 255;
+	my constant $maxRdataTXTLengh = 255;
 
 	# Each parts of a domain name (insided '.') can have a maximum lengh.
-	my $maxLabelDomainNameLengh = 63;
+	my constant $maxLabelDomainNameLengh = 63;
 
 	# The last encountered domain name
 	my $currentDomainName;
