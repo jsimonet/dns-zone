@@ -11,11 +11,13 @@ my @toTestAreOk = (
 	"\$ttl 123",
 	"\$ttl 123\n",
 	"\$ttl 123\ndomain in a 10.0.0.1",
+	"soa in soa dom action 2016100601 12 34 56 78",
 );
 
 my @toTestAreNOk = (
-	"\$ttl 3600 domain in a 10.0.0.1",
-	'domain in a 10.0.0.1',
+	"\$ttl 3600 domain in a 10.0.0.1", # no new line between the two entries
+	'domain in a 10.0.0.1',            # no ttl defined
+	" in soa dom action 2016100601 12 34 56 78", # No domain name
 );
 
 # plan @toTestAreOk.elems + @toTestAreNOk.elems;

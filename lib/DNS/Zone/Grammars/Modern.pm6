@@ -19,9 +19,6 @@ grammar DNS::Zone::Grammars::Modern {
 	# Each parts of a domain name (insided '.') can have a maximum lengh.
 	my constant $maxLabelDomainNameLengh = 63;
 
-	# The last encountered domain name
-	my $currentDomainName;
-
 	# TODO
 	# The origin of the zone, used to check if domains are inside the zone,
 	# and to check if NS is defined
@@ -36,6 +33,9 @@ grammar DNS::Zone::Grammars::Modern {
 
 		# is $ttl or soa already encountered.
 		my Bool $*encounteredTTL = False;
+
+		# The last encountered domain name
+		my $*currentDomainName;
 
 		nextwith |c;
 	}
@@ -52,7 +52,7 @@ grammar DNS::Zone::Grammars::Modern {
 		[
 			<resourceRecord> \h* <commentWithoutNewline>?
 			# Current TTL and current domain name have to be defined
-			<?{ $*currentTTL && $currentDomainName }>
+			<?{ $*currentTTL && $*currentDomainName }>
 			|
 			<controlEntry>
 			|
@@ -97,7 +97,7 @@ grammar DNS::Zone::Grammars::Modern {
 		[ <domainName> | $<domainName> = '' ] <rrSpace>+ <ttlOrClass> <type> <rrSpace>*
 
 		# Save current domain name if it is specified
-		{ $currentDomainName = $<domainName>.Str if $<domainName>.chars; }
+		{ $*currentDomainName = $<domainName>.Str if $<domainName>.chars; }
 
 		# Fail if grammar match an _ and the type is not SRV
 		<!{ ($<domainName>.index( '_' )).defined &&
