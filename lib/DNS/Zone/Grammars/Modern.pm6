@@ -139,6 +139,10 @@ grammar DNS::Zone::Grammars::Modern {
 	token ttlOrClass {
 		[ [ <class> | <ttl> ] <rrSpace>+ ] ** 0..2
 		<?{ $<class>.elems <= 1 && $<ttl>.elems <= 1 }>
+
+		# TODO save real value of the ttl (depends on $1)
+		# Only save ttl if it is not defined (before type soa or $ttl)
+		{ defined $<ttl> && ( $*encounteredTTL or $*currentTTL = $<ttl>.Str ) }
 	}
 
 	# TTL, can be:
@@ -157,9 +161,6 @@ grammar DNS::Zone::Grammars::Modern {
 				$1 ~~ ''  && ($0          <= 2147483647)
 			)
 		}>
-		# TODO save real value of the ttl (depends on $1)
-		# Only save ttl if it is not defined (before type soa or $ttl)
-		{ $*encounteredTTL or $*currentTTL = $0.Str }
 	}
 
 	# CLASS
