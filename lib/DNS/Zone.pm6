@@ -32,7 +32,6 @@ class DNS::Zone
 		return .Str for @.rr;
 	}
 
-	multi method add() { * }
 	multi method add( DNS::Zone::ResourceRecord :$rr!, PositiveInteger :$position! )
 	{
 		if $position < @.rr.elems
@@ -44,7 +43,6 @@ class DNS::Zone
 
 	multi method add( DNS::Zone::ResourceRecord :$rr! )
 	{
-		say "in second";
 		push @.rr, $rr;
 	}
 
@@ -90,4 +88,7 @@ class DNS::Zone
 			die "not parsed!";
 		}
 	}
+
+	method verify( --> Bool )
+	{ ... }
 }
