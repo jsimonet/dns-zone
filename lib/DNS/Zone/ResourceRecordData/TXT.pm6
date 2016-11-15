@@ -4,7 +4,7 @@ use DNS::Zone::ResourceRecordData;
 
 class DNS::Zone::ResourceRecordData::TXT is DNS::Zone::ResourceRecordData
 {
-	has Str $.txt is rw;
+	has Str $.txt is rw is required;
 
 	method gist()
 	{ return $.txt; }

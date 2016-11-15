@@ -1,5 +1,14 @@
-$TtL    3600
+prettl 1233 in txt pre ttl
+prettl txt pre ttl 2
+
+$TtL    1234
 $origin example.com.
+
+presoa in txt pre soa
+presoa2 8888 txt pre soa 2
+presoa3 txt pre soa 2
+
+$ttl 3600
 
 example.com.    in              SOA     ns1.example.com. hostmaster.example.com. (
                                         1234567890      ; Serial
@@ -85,6 +94,8 @@ mini                            AAAA    ::1
 ; CNAME
 test-cname                      CNAME   test-a
 test-reccname                   CNAME   test-cname
+
+$ttl 9999
 
 ; DNAME
 test-dname                      DNAME   test-cname

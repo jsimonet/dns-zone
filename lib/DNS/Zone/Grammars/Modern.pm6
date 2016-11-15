@@ -10,32 +10,40 @@ use v6;
 =end pod
 grammar DNS::Zone::Grammars::Modern {
 
-	# Used to count opened parentheses.
-	my $parenCount = 0;
-
 	# Used to check the domain name lengh.
-	my $maxDomainNameLengh = 254;
+	my constant $maxDomainNameLengh = 254;
 
 	# Used to check the TXT data.
-	my $maxRdataTXTLengh = 255;
+	my constant $maxRdataTXTLengh = 255;
 
 	# Each parts of a domain name (insided '.') can have a maximum lengh.
-	my $maxLabelDomainNameLengh = 63;
-
-	# The last encountered domain name
-	my $currentDomainName;
-
-	# The last encountered ttl
-	my $currentTTL;
+	my constant $maxLabelDomainNameLengh = 63;
 
 	# TODO
 	# The origin of the zone, used to check if domains are inside the zone,
 	# and to check if NS is defined
 	my $origin = '';
 
+	method parse( |c ) {
+		# Used to count opened parentheses.
+		my $*parenCount = 0;
+
+		# Used to check if ttl is specified.
+		my $*currentTTL;
+
+		# is $ttl or soa already encountered.
+		my Bool $*encounteredTTL = False;
+
+		# The last encountered domain name
+		my $*currentDomainName;
+
+		nextwith |c;
+	}
 
 	# Entry point
-	token TOP { [ <entry> \v+ ]+ { $parenCount = 0; } }
+	token TOP {
+		<entry>* % [ \v+ ] { $*parenCount = 0; }
+	}
 
 	# A DNS zone file is composed of entries
 	# If no '(' at the start of the line, no space before resourceRecord.
@@ -44,14 +52,14 @@ grammar DNS::Zone::Grammars::Modern {
 		[
 			<resourceRecord> \h* <commentWithoutNewline>?
 			# Current TTL and current domain name have to be defined
-			<?{ $currentTTL && $currentDomainName }>
+			<?{ $*currentTTL && $*currentDomainName }>
 			|
 			<controlEntry>
 			|
 			<commentWithoutNewline>
 		]?
-		[ <rrSpace> <commentWithoutNewline>? ]*
-		<?{ $parenCount == 0 }>
+		[ <rrSpace> <commentWithoutNewline>? ]?
+		<?{ $*parenCount == 0 }>
 		#<error> \v*
 	}
 
@@ -71,7 +79,10 @@ grammar DNS::Zone::Grammars::Modern {
 	proto token controlEntryAction { * }
 	token controlEntryAction:sym<TTL> {
 		[ :i 'ttl' ] \h+ <ttl>
-		{ $currentTTL = $<ttl>.Str.Numeric; }
+		{
+			$*encounteredTTL = True;
+			$*currentTTL = $<ttl>.Str.Numeric;
+		}
 	}
 
 	token controlEntryAction:sym<ORIGIN>  { [ :i 'origin' ] \h+ <domainName> }
@@ -86,7 +97,7 @@ grammar DNS::Zone::Grammars::Modern {
 		[ <domainName> | $<domainName> = '' ] <rrSpace>+ <ttlOrClass> <type> <rrSpace>*
 
 		# Save current domain name if it is specified
-		{ $currentDomainName = $<domainName>.Str if $<domainName>.chars; }
+		{ $*currentDomainName = $<domainName>.Str if $<domainName>.chars; }
 
 		# Fail if grammar match an _ and the type is not SRV
 		<!{ ($<domainName>.index( '_' )).defined &&
@@ -113,7 +124,11 @@ grammar DNS::Zone::Grammars::Modern {
 	token domainName:sym<@> { '@' }
 
 	token domainNameLabel {
-		<alnum> [ <alnum> | '-' ] ** {0 .. $maxLabelDomainNameLengh - 1}
+		<domainNameLabelChar> [ <domainNameLabelChar> | '-' ] ** {0 .. $maxLabelDomainNameLengh - 1}
+	}
+
+	token domainNameLabelChar {
+		<[a..zA..Z0..9_]>
 	}
 
 	# TTL AND CLASS
@@ -124,6 +139,10 @@ grammar DNS::Zone::Grammars::Modern {
 	token ttlOrClass {
 		[ [ <class> | <ttl> ] <rrSpace>+ ] ** 0..2
 		<?{ $<class>.elems <= 1 && $<ttl>.elems <= 1 }>
+
+		# TODO save real value of the ttl (depends on $1)
+		# Only save ttl if it is not defined (before type soa or $ttl)
+		{ defined $<ttl> && ( $*encounteredTTL or $*currentTTL = $<ttl>.Str ) }
 	}
 
 	# TTL, can be:
@@ -134,12 +153,12 @@ grammar DNS::Zone::Grammars::Modern {
 			# Checks if the final value is positive and
 			# inferior to a signed int32
 			$0 > 0 && (
-				$1 ~~ 'w' && ($0 * 604800 <= 2147483647) ||
-				$1 ~~ 'd' && ($0 * 86400  <= 2147483647) ||
-				$1 ~~ 'h' && ($0 * 3600   <= 2147483647) ||
-				$1 ~~ 'm' && ($0 * 60     <= 2147483647) ||
-				$1 ~~ 's' && ($0          <= 2147483647) ||
-				$1 ~~ ''  && ($0          <= 2147483647)
+				$1 eq 'w' && ($0 * 604800 <= 2147483647) ||
+				$1 eq 'd' && ($0 * 86400  <= 2147483647) ||
+				$1 eq 'h' && ($0 * 3600   <= 2147483647) ||
+				$1 eq 'm' && ($0 * 60     <= 2147483647) ||
+				$1 eq 's' && ($0          <= 2147483647) ||
+				$1 eq ''  && ($0          <= 2147483647)
 			)
 		}>
 	}
@@ -277,9 +296,8 @@ grammar DNS::Zone::Grammars::Modern {
 		<rrSpace>* <rdataSOAMin> <rrSpace>* <commentWithoutNewline>*
 
 		{
-			unless defined $currentTTL {
-				$currentTTL = $<rdataSOAMin>.Str.Numeric unless $currentTTL;
-			}
+			$*encounteredTTL = True;
+			$*currentTTL //= $<rdataSOAMin>.Str.Numeric unless $*currentTTL;
 		}
 	}
 
@@ -354,12 +372,12 @@ grammar DNS::Zone::Grammars::Modern {
 	# Match only if $parenCount is positive, in other words,
 	# if we are currently in a multi-line sequence
 	token rrNewLine {
-		\n <?{ $parenCount > 0; }>
+		\n <?{ $*parenCount > 0; }>
 	}
 
 	# PAREN
 	# Parenthese definition
 	proto token paren { * }
-	token paren:sym<po> { '(' { $parenCount++; } }
-	token paren:sym<pf> { ')' <?{ $parenCount > 0; }> { $parenCount--; } }
+	token paren:sym<po> { '(' { $*parenCount++; } }
+	token paren:sym<pf> { ')' <?{ $*parenCount > 0; }> { $*parenCount--; } }
 }

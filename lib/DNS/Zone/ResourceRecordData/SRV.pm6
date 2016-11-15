@@ -4,10 +4,10 @@ use DNS::Zone::ResourceRecordData;
 
 class DNS::Zone::ResourceRecordData::SRV is DNS::Zone::ResourceRecordData
 {
-	has Int $.priority is rw;
-	has Int $.weight   is rw;
-	has Int $.port     is rw;
-	has Str $.target   is rw;
+	has Int $.priority is rw is required;
+	has Int $.weight   is rw is required;
+	has Int $.port     is rw is required;
+	has Str $.target   is rw is required;
 
 	method gist()
 	{ return "$.priority $.weight $.port $.target"; }

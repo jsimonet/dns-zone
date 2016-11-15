@@ -80,7 +80,7 @@ class DNS::Zone::ModernActions
 
 	method ttl($/)
 	{
-		make +$/; # The + convert to int
+		make $/;
 	}
 
 	method type:sym<A>($/)
